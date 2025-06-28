@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from './RecordList.module.css';
 
 function RecordList({ records, isReadOnly } : any) {
   const [openId, setOpenId] = useState(null);
@@ -13,16 +14,18 @@ function RecordList({ records, isReadOnly } : any) {
   };
 
   return (
-    <section>
+    <section className={styles.recordSection}>
       <h2>기록 목록</h2>
-      <ul>
+      <ul className={styles.recordList}>
         {records.map((r:any) => (
           <li key={r.id}>
-            <div onClick={() => toggle(r.id)} className="recordHeader">
-              📅 {new Date(r.date).toLocaleDateString()} / {r.title} / {r.author}
+            <div onClick={() => toggle(r.id)}  className={styles.recordHeader}>
+              <p>📅 {new Date(r.date).toLocaleDateString()} </p>
+              <p> {r.title} </p>
+              <p> {r.author} </p>
             </div>
             {openId === r.id && (
-              <div className="recordBody">
+              <div className={styles.recordBody}>
                 <p>{r.content}</p>
                 <h4>💬 댓글</h4>
                 <ul>
@@ -36,9 +39,9 @@ function RecordList({ records, isReadOnly } : any) {
                       e.preventDefault();
       
                     }}
-                  >
-                    <input name="comment" placeholder="댓글 입력" />
-                    <button type="submit">등록</button>
+                   className={styles.commentForm}>
+                    <input name="comment" placeholder="댓글 입력"  className={styles.commentInput}/>
+                    <button type="submit" className={styles.commentButton}>등록</button>
                   </form>
                 )}
               </div>

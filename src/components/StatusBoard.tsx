@@ -1,3 +1,5 @@
+import styles from './SatusBoard.module.css';
+
 function StudyStatusBoard({ members } : any) {
   const sorted = [...members].sort((a, b) => {
     if (b.recordCount === a.recordCount) {
@@ -7,9 +9,9 @@ function StudyStatusBoard({ members } : any) {
   });
 
   return (
-    <section>
+    <section className={styles.statusSection}>
       <h2>스터디 현황</h2>
-      <table>
+      <table className={styles.statusTable}>
         <thead>
           <tr><th>순위</th><th>이름</th><th>기록 수</th></tr>
         </thead>
