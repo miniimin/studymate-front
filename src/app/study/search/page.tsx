@@ -5,7 +5,9 @@ import styles from "./page.module.css";
 import React from "react";
 import { useState } from "react";
 import StudySearch from "@/components/study-card/StudySearch";
+import axios from "axios";
 
+const apiUrl = process.env.LOCAL_API_URL;
 
 const dummyStudies = [
   {

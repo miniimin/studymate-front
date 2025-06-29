@@ -3,6 +3,9 @@
 import styles from './page.module.css';
 import globalStyles from '@/app/page.module.css';
 import { useState } from 'react';
+import axios from "axios";
+
+const apiUrl = process.env.LOCAL_API_URL;
 
 export default function LoginPage() {
   const [form, setForm] = useState({
