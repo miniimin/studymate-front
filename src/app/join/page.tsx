@@ -3,11 +3,8 @@
 import styles from './page.module.css';
 import globalStyels from '@/app/page.module.css';
 import { useState } from 'react';
-import axios from "axios";
 import { useRouter } from 'next/navigation';
-
-
-const apiUrl = process.env.NEXT_PUBLIC_LOCAL_API_URL;
+import { postUser } from '@/api/user';
 
 export default function JoinPage() {
   const Router = useRouter();
@@ -24,10 +21,15 @@ export default function JoinPage() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    //axios.post(`${apiUrl}/api/user`, form)
-    Router.push('/login'); // 회원가입 후 로그인 페이지로 이동
+    try {
+      await postUser(form);
+      alert('회원가입이 완료되었습니다.');
+      Router.push('/login');
+    } catch (error) {
+      alert('회원가입에 실패했습니다.=');
+    }
   };
 
   return (<>
