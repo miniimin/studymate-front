@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { postUser } from '@/api/user';
 
 export default function JoinPage() {
-  const Router = useRouter();
+  const router = useRouter();
 
   const [form, setForm] = useState({
     email: '',
@@ -26,7 +26,7 @@ export default function JoinPage() {
     try {
       await postUser(form);
       alert('회원가입이 완료되었습니다.');
-      Router.push('/login');
+      router.push('/login');
     } catch (error) {
       alert('회원가입에 실패했습니다.=');
     }

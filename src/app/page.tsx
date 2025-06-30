@@ -1,8 +1,22 @@
+'use client';
 import styles from "./page.module.css";
 import StudySearch from "@/components/study-card/StudySearch";
 import StudyStatus from "@/components/study-card/StudyStatus";
+import { getMain } from "@/api/user";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [myStudies, setMyStudies] = useState<any[]>([]);
+  const [recruitingStudies, setRecruitingStudies] = useState<any[]>([]);
+  useEffect(() => {
+    getMain().then((data) => {
+      setMyStudies(data.myStudies);
+      setRecruitingStudies(data.recentStudies);
+    }).catch((error) => {
+      console.error("Error fetching main data:", error);
+    });
+  }, [])
+
   return (
     <>
       <div className={styles.fullWidthBlock}>
@@ -18,26 +32,30 @@ export default function Home() {
       </div>
       <div className={styles.subtitle}>나의 진행 중인 스터디</div>
       <div className={styles.wrapperStyles}>
-        <StudyStatus
-          title="리액트 기초 스터디"
-          description="리액트의 기초부터 심화까지 학습하는 스터디입니다."
-          period="2024.01.01 - 2024.03.31"
-          status="진행중"
-          role="leader"
-          participants={3}
-        />
-        <StudyStatus
-          title="Next.js 심화 스터디"
-          description="Next.js의 고급 기능을 배우고 프로젝트에 적용하는 스터디입니다."
-          period="2024.02.01 - 2024.04.30"
-          status="완료"
-          role="member"
-          participants={1}
-        />
-        <StudyStatus/>
-        </div>
-        <div className={styles.subtitle}>최근 올라온 스터디</div>
-        <div className={styles.wrapperStyles}>
+        {(myStudies || []).map((study, index) => (
+          <StudyStatus
+            key={index}
+            title={study.title}
+            description={study.description}
+            period={study.period}
+            status={study.status}
+            role={study.role}
+            participants={study.participants}
+          />
+        ))}
+      </div>
+      <div className={styles.subtitle}>최근 올라온 스터디</div>
+      <div className={styles.wrapperStyles}>
+        {(recruitingStudies || []).map((study, index) => (
+          <StudySearch
+            key={index}
+            title={study.title}
+            description={study.description}
+            period={study.period}
+            participants={study.participants}
+            maxParticipants={study.maxParticipants}
+          />
+        ))}
         <StudySearch
           title="자바스크립트 심화 스터디"
           description="자바스크립트의 고급 개념을 배우고 실습하는 스터디입니다."

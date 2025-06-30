@@ -3,11 +3,12 @@
 import styles from './page.module.css';
 import globalStyles from '@/app/page.module.css';
 import { useState } from 'react';
-import axios from "axios";
-
-const apiUrl = process.env.LOCAL_API_URL;
+import { login } from '@/api/user';
+import { useRouter} from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     email: '',
     password: ''
@@ -18,10 +19,16 @@ export default function LoginPage() {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 처리 로직
-    console.log('로그인 시도:', form);
+    try {
+      await login(form);
+      alert('로그인 성공');
+      router.push('/');
+    } catch (error) {
+      console.error('로그인 중 오류 발생:', error);
+      alert('로그인 실패');
+    }
   };
 
   return (
