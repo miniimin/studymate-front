@@ -43,12 +43,30 @@
   padding: 0;
 }
 
+
 .navItem a {
   font-size: 1rem;
   color: #333;
   text-decoration: none;
   transition: color 0.2s ease-in-out;
 }
+
+.navItemDropDown {
+  position: relative;
+}
+
+.dropDownMenu {
+  position: absolute;
+  display: flex;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #6c7ae0;
+  justify-content: center;
+  padding: 0.2rem;
+  cursor: pointer;
+}
+
 
 .navItem a:hover {
   color: #6c7ae0;

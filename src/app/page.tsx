@@ -8,13 +8,16 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [myStudies, setMyStudies] = useState<any[]>([]);
   const [recruitingStudies, setRecruitingStudies] = useState<any[]>([]);
+
   useEffect(() => {
-    getMain().then((data) => {
-      setMyStudies(data.myStudies);
-      setRecruitingStudies(data.recentStudies);
-    }).catch((error) => {
-      console.error("Error fetching main data:", error);
-    });
+    getMain()
+      .then((data) => {
+        setMyStudies(data.myStudies);
+        setRecruitingStudies(data.recentStudies);
+      })
+      .catch((error) => {
+        console.error("Error fetching main data:", error);
+      });
   }, [])
 
   return (

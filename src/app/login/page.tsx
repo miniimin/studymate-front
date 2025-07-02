@@ -4,10 +4,13 @@ import styles from './page.module.css';
 import globalStyles from '@/app/page.module.css';
 import { useState } from 'react';
 import { login } from '@/api/user';
-import { useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
+
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setIsLoggedIn, setUser } = useUser();
 
   const [form, setForm] = useState({
     email: '',
@@ -24,7 +27,7 @@ export default function LoginPage() {
     try {
       await login(form);
       alert('로그인 성공');
-      router.push('/');
+      window.location.href = '/';
     } catch (error) {
       console.error('로그인 중 오류 발생:', error);
       alert('로그인 실패');
