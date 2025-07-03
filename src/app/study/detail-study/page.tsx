@@ -67,7 +67,6 @@ export default function StudyDetailPage() {
         <p>{studyData.description}</p>
         <ul>
           <li>스터디 기간</li><li>{studyData.startDate} ~ {studyData.endDate}</li>
-          <li>모집 마감일</li><li>{studyData.deadline || '없음'}</li>
           <li>참여인원</li><li>{studyData.participants.length} / {studyData.maxParticipants}</li>
           <li>방장</li><li>{studyData.leaderName}</li>
         </ul>

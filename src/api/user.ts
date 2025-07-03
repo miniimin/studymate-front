@@ -9,14 +9,14 @@ export const getMain = async () => {
     return response;
 }
 
-// 로그인 확인
+// 로그인 상태 확인
 export const fetchUser = async () => {
     const response = await axios.get(`${apiUrl}/api/users/me`,
         { withCredentials: true });
     return response;
 }
 
-// 회원가입
+// 스프링 시큐리티 폼 회원가입
 export const postUser = async (userData: {
     email: string;
     nickname: string;
@@ -28,7 +28,7 @@ export const postUser = async (userData: {
     return response;
 }
 
-// 로그인
+// 스프링 시큐리티 폼 로그인
 export const login = async (loginData: {
     email: string;
     password: string;
@@ -47,7 +47,6 @@ export const login = async (loginData: {
             withCredentials: true,
         }
     );
-    console.log("리스폰스 " + response);
     return response;
 }
 
@@ -61,5 +60,10 @@ export const logout = async () => {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
         });
+    return response;
+}
+
+export const createStudy = async (studyData: any) => {
+    const response = await axios.post(`${apiUrl}/api/studies`, studyData);
     return response;
 }

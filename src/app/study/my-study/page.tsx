@@ -8,7 +8,6 @@ export default function MyStudyPage() {
   return (
     <>
       <div className={globalStyles.title}>나의 스터디</div>
-
       <Link href={'/study/new-study'} className={styles.addStudyLink}>
         <button className={styles.addButton}>
           + 새로운 스터디 만들기
