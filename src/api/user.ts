@@ -1,18 +1,13 @@
 import axios from "axios";
 
 const apiUrl = process.env.NEXT_PUBLIC_LOCAL_API_URL;
+axios.defaults.withCredentials = true;
 
-// 메인페이지
-export const getMain = async () => {
-    const response = await axios.get(`${apiUrl}/api/main`,
-        { withCredentials: true });
-    return response;
-}
 
+// auth
 // 로그인 상태 확인
 export const fetchUser = async () => {
-    const response = await axios.get(`${apiUrl}/api/users/me`,
-        { withCredentials: true });
+    const response = await axios.get(`${apiUrl}/api/users/me`);
     return response;
 }
 
@@ -23,8 +18,7 @@ export const postUser = async (userData: {
     password: string;
     confirmPassword: string;
 }) => {
-    const response = await axios.post(`${apiUrl}/api/users`, userData,
-        { withCredentials: true });
+    const response = await axios.post(`${apiUrl}/api/users`, userData);
     return response;
 }
 
@@ -43,8 +37,7 @@ export const login = async (loginData: {
         {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            withCredentials: true,
+            }
         }
     );
     return response;
@@ -55,15 +48,9 @@ export const logout = async () => {
     const response = await axios.post(`${apiUrl}/api/auth/logout`,
         new FormData(),
         {
-            withCredentials: true,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
         });
-    return response;
-}
-
-export const createStudy = async (studyData: any) => {
-    const response = await axios.post(`${apiUrl}/api/studies`, studyData);
     return response;
 }

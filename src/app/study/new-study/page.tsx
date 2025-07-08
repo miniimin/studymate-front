@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import globalStyles from "@/app/page.module.css";
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
-import { createStudy } from '@/api/user';
+import { createStudy } from '@/api/study';
 
 export default function NewStudyPage() {
   const today = new Date().toISOString().split('T')[0];
@@ -12,7 +12,7 @@ export default function NewStudyPage() {
   const [form, setForm] = useState({
     title: '',
     description: '',
-    participantsMax: '1',
+    participantsMax: '',
     startDate: today,
     endDate: '',
     alwaysRecruit: 'always',
@@ -33,20 +33,19 @@ export default function NewStudyPage() {
 
     const payload = {
       ...form,
-      participantsMax: Number(form.participantsMax),
       startDate: `${form.startDate}T00:00:00`,
       endDate: `${form.endDate}T00:00:00`,
       recruitDeadline:
         form.alwaysRecruit === 'beforeStart'
           ? `${form.startDate}T00:00:00`
-          : undefined,
+          : `${form.endDate}T00:00:00`
     };
 
     console.log(form);
     try {
-      const res = await createStudy(payload);
+      const res = await createStudy(payload); 
       alert('스터디가 만들어졌습니다.');
-      router.push(`/detail-study/${res.data.id}`);
+      router.push(`/study/detail-study/${res.data.id}`);
     } catch (err) {
       console.log(err)
       alert('스터디를 만드는데 실패했습니다.');

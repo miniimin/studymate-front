@@ -2,22 +2,49 @@
 import styles from "./page.module.css";
 import StudySearch from "@/components/study-card/StudySearch";
 import StudyStatus from "@/components/study-card/StudyStatus";
-import { getMain } from "@/api/user";
+import { getMain } from "@/api/page";
 import { useEffect, useState } from "react";
 
+interface MyStudyList {
+  id: number;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  role: string;
+  recruitDeadline: string;
+}
+
+interface SearchStudyList {
+  id: number;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  participantsNum: number;
+  participantsMax: number;
+  recruitDeadline: string;
+}
+
+
 export default function Home() {
-  const [myStudies, setMyStudies] = useState<any[]>([]);
-  const [recruitingStudies, setRecruitingStudies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const [ongoingStudyList, setongoingStudyList] = useState<MyStudyList[]>([]);
+  const [recruitingStudyList, setRecruitingStudyList] = useState<SearchStudyList[]>([]);
 
   useEffect(() => {
-    getMain()
-      .then((data) => {
-        setMyStudies(data.myStudies);
-        setRecruitingStudies(data.recentStudies);
-      })
-      .catch((error) => {
-        console.error("Error fetching main data:", error);
-      });
+    const fetch = async () => {
+      try {
+        const res = await getMain();
+        console.log(res);
+
+      } catch (err) {
+
+      }
+    };
+    fetch();
   }, [])
 
   return (
@@ -35,28 +62,28 @@ export default function Home() {
       </div>
       <div className={styles.subtitle}>나의 진행 중인 스터디</div>
       <div className={styles.wrapperStyles}>
-        {(myStudies || []).map((study, index) => (
+        {ongoingStudyList.map((study, index) => (
           <StudyStatus
             key={index}
             title={study.title}
             description={study.description}
-            period={study.period}
-            status={study.status}
+            startDate={study.startDate}
+            endDate={study.endDate}
             role={study.role}
-            participants={study.participants}
           />
         ))}
       </div>
       <div className={styles.subtitle}>최근 올라온 스터디</div>
       <div className={styles.wrapperStyles}>
-        {(recruitingStudies || []).map((study, index) => (
+        {(recruitingStudyList).map((study, index) => (
           <StudySearch
             key={index}
             title={study.title}
             description={study.description}
-            period={study.period}
-            participants={study.participants}
-            maxParticipants={study.maxParticipants}
+            startDate={study.startDate}
+            endDate={study.endDate}
+            participants={study.participantsNum}
+            maxParticipants={study.participantsMax}
           />
         ))}
         <StudySearch

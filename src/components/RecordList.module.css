@@ -13,6 +13,17 @@
   margin: 0;
 }
 
+.recordHeaderRow {
+  display: grid;
+  justify-content: space-between;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+  padding: 0.5rem 1rem;
+  background-color: #f7f7f7;
+  grid-template-columns: 3fr 7fr 2fr;
+  justify-content: center;
+}
+
 .recordHeader {
   background-color: #f9f9f9;
   padding: 0.8rem 1rem;
