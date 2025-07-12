@@ -13,6 +13,7 @@ interface MyStudyList {
   endDate: string;
   role: string;
   recruitDeadline: string;
+  participantsMax: string;
 }
 
 interface SearchStudyList {
@@ -26,24 +27,26 @@ interface SearchStudyList {
   recruitDeadline: string;
 }
 
-
 export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const [ongoingStudyList, setongoingStudyList] = useState<MyStudyList[]>([]);
+  const [ongoingStudyList, setOngoingStudyList] = useState<MyStudyList[]>([]);
   const [recruitingStudyList, setRecruitingStudyList] = useState<SearchStudyList[]>([]);
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await getMain();
-        console.log(res);
-
-      } catch (err) {
-
+  const fetch = async () => {
+    try {
+      const res = await getMain();
+      if (res.data.ongoingStudyList !== null) {
+        setOngoingStudyList(res.data.ongoingStudyList);
       }
-    };
+      if (res.data.recruitingStudyList.studies.length > 0) {
+        setRecruitingStudyList(res.data.recruitingStudyList.studies);
+        console.log("뭐지" + recruitingStudyList);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
     fetch();
   }, [])
 
@@ -64,42 +67,32 @@ export default function Home() {
       <div className={styles.wrapperStyles}>
         {ongoingStudyList.map((study, index) => (
           <StudyStatus
-            key={index}
+            key={study.id}
+            id={study.id}
             title={study.title}
             description={study.description}
             startDate={study.startDate}
             endDate={study.endDate}
             role={study.role}
+            participantsMax={study.participantsMax}
           />
         ))}
       </div>
       <div className={styles.subtitle}>최근 올라온 스터디</div>
       <div className={styles.wrapperStyles}>
-        {(recruitingStudyList).map((study, index) => (
+        {recruitingStudyList.map((study, index) => (
           <StudySearch
-            key={index}
+            key={study.id}
+            id={study.id}
             title={study.title}
             description={study.description}
             startDate={study.startDate}
             endDate={study.endDate}
-            participants={study.participantsNum}
+            participantsNum={study.participantsNum}
             maxParticipants={study.participantsMax}
+            recruitDeadline={study.recruitDeadline}
           />
         ))}
-        <StudySearch
-          title="자바스크립트 심화 스터디"
-          description="자바스크립트의 고급 개념을 배우고 실습하는 스터디입니다."
-          period="2024.03.01 - 2024.05.31"
-          participants={10}
-          maxParticipants={15}
-        />
-        <StudySearch
-          title="TypeScript 기초 스터디"
-          description="TypeScript의 기초부터 시작하는 스터디입니다."
-          period="2024.04.01 - 2024.06.30"
-          participants={8}
-          maxParticipants={12}
-        />
       </div>
     </>
   );

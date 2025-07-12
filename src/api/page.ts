@@ -11,7 +11,7 @@ export const getMain = async () => {
 }
 
 // 나의 스터디 페이지
-export const getMyStudy = async (studyId: string) => {
+export const getMyStudy = async () => {
     const response = await axios.get(`${apiUrl}/api/page/my-study`);
     return response;
 }

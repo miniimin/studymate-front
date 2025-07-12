@@ -2,24 +2,29 @@ import React from "react";
 import styles from "./card.module.css";
 import Link from "next/link";
 
-const StudyStatus = ({ title, description, period, status, participants, role }: any) => {
-  const isLeader = role === 'leader';
-  const isInProgress = status === '진행중';
-  const isCompleted = status === '완료';
+const StudyStatus = ({ id, title, description, startDate, endDate, role, participantsMax }: any) => {
+  const isLeader = role === 'LEADER';
+  const splitStartDate = startDate.split('T')[0];
+  const splitEndDate = endDate.split('T')[0];
+  const status = splitEndDate >= new Date().toISOString().split('T')[0] ? '진행 중' : '완료';
 
   return (
-    <Link href={`/study/detail-study`}>
+    <Link href={`/study/detail-study/${id}`}>
       <div className={styles.container}>
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.description}>{description}</p>
-        <p><strong>기간:</strong> {period}</p>
+        <p><strong>스터디 기간</strong> {splitStartDate} ~ {splitEndDate} </p>
         <div className={styles.statusRow}>
-          <span className={`${styles.statusBadge} ${isInProgress ? styles.inProgress : ''} ${isCompleted ? styles.completed : ''}`}>
+          <span className={`${styles.statusBadge} 
+          ${status === '진행 중' ? styles.inProgress : ''} 
+          ${status === '완료' ? styles.completed : ''}`}>
             {status}
           </span>
-          {isLeader && <span className={styles.leaderBadge}>방장</span>}
-          {participants === 1 && (<span className={styles.soloBadge}>1인 스터디</span>
-          )}
+          {participantsMax === 1
+            ? (<span className={styles.soloBadge}>1인 스터디</span>)
+            : isLeader
+            && <span className={styles.leaderBadge}>방장</span>
+              /*<span className={styles.participantBadge}>멤버</span>*/}
         </div>
       </div>
     </Link>)
