@@ -12,7 +12,7 @@ export default function NewStudyPage() {
   const [form, setForm] = useState({
     title: '',
     description: '',
-    participantsMax: '',
+    participantsMax: '1',
     startDate: today,
     endDate: '',
     alwaysRecruit: 'always',

@@ -17,8 +17,14 @@ export const getMyStudy = async (studyId: string) => {
 }
 
 // 스터디 검색 페이지
-export const getSearchStudy = async () => {
-    const response = await axios.get(`${apiUrl}/api/page/search-study`);
+export const getSearchStudy = async (currentPage: any, query: any) => {
+    const response = await axios.get(`${apiUrl}/api/page/search-study`, {
+        params: {
+            query: query,
+            page: currentPage,
+            size: 6
+        }
+    });
     return response;
 }
 
