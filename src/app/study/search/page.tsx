@@ -53,7 +53,7 @@ export default function StudySearchPage() {
 
   useEffect(() => {
     fetchStudy();
-  },[pageParam, queryParam]);
+  }, [pageParam, queryParam]);
 
   // 사용자가 검색 버튼 누르면 URL 변경하여 페이지 1부터 검색
   const handleSearch = (e: React.FormEvent) => {
@@ -102,21 +102,19 @@ export default function StudySearchPage() {
         <button onClick={() => movePage((currentBlock - 1) * limit + 1)} className={styles.blockButton}>
           이전
         </button>)}
-      <ul>
-        {Array.from({ length: limit }, (_, index) => {
-          const pageNumber = startPage + index;
-          if (pageNumber > totalPages) return null; 
-          return (
-            <li key={index}>
-              <button onClick={() => movePage(pageNumber)}
-                disabled={pageNumber === pageParam}
-                className={styles.pageButton}>
-                {pageNumber}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      {Array.from({ length: limit }, (_, index) => {
+        const pageNumber = startPage + index;
+        if (pageNumber > totalPages) return null;
+        return (
+          <button
+            key={index}
+            onClick={() => movePage(pageNumber)}
+            disabled={pageNumber === pageParam}
+            className={styles.pageButton}>
+            {pageNumber}
+          </button>
+        );
+      })}
       {(currentBlock + 1) * limit < totalPages && (
         <button onClick={() => movePage((currentBlock + 1) * limit + 1)} className={styles.blockButton}>
           다음

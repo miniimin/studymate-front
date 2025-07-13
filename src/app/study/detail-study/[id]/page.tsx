@@ -5,6 +5,7 @@ import RecordList from '@/components/RecordList';
 import { redirect, useParams } from 'next/navigation';
 import { getStudyFeed } from '@/api/page';
 import { joinStudy, submitRecord } from '@/api/study';
+import { useUser } from '@/context/UserContext';
 
 interface StudyDetail {
   id: number;
@@ -28,6 +29,7 @@ interface RecordList {
 }
 
 export default function StudyDetailPage() {
+  const { isLoggedIn } = useUser();
   const { id: studyId } = useParams();
 
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,6 @@ export default function StudyDetailPage() {
     const fetchStudy = async () => {
       try {
         const res = await getStudyFeed(studyId);
-        console.log(res.data);
         setIsParticipant(res.data.isParticipant);
         setStudyDetail(res.data.studyDetail);
         setParticipantNum(res.data.participantNum);
@@ -76,6 +77,8 @@ export default function StudyDetailPage() {
   };
 
   const handleJoinStudy = async (e: any) => {
+    if (!isLoggedIn) return alert('로그인이 필요합니다.');
+
     if (window.confirm('스터디에 참여하겠습니까?')) {
       try {
         const res = await joinStudy(studyId);

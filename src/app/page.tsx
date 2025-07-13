@@ -4,6 +4,7 @@ import StudySearch from "@/components/study-card/StudySearch";
 import StudyStatus from "@/components/study-card/StudyStatus";
 import { getMain } from "@/api/page";
 import { useEffect, useState } from "react";
+import { useUser } from '@/context/UserContext';
 
 interface MyStudyList {
   id: number;
@@ -28,15 +29,16 @@ interface SearchStudyList {
 }
 
 export default function Home() {
+  const { isLoggedIn } = useUser();
+
   const [ongoingStudyList, setOngoingStudyList] = useState<MyStudyList[]>([]);
   const [recruitingStudyList, setRecruitingStudyList] = useState<SearchStudyList[]>([]);
 
   const fetch = async () => {
     try {
       const res = await getMain();
-      console.log(res.data);
-      setOngoingStudyList(res.data.ongoingStudyList.content);
-      setRecruitingStudyList(res.data.recruitingStudyList.studies);
+      res.data.ongoingStudyList?.studies && setOngoingStudyList(res.data.ongoingStudyList.studies);
+      res.data.recruitingStudyList?.studies && setRecruitingStudyList(res.data.recruitingStudyList.studies);
     } catch (err) {
       console.error(err);
     }
@@ -61,7 +63,12 @@ export default function Home() {
       </div>
       <div className={styles.subtitle}>나의 진행 중인 스터디</div>
       <div className={styles.wrapperStyles}>
-        {ongoingStudyList?.map((study, index) => (
+        {!isLoggedIn && (
+          <p>로그인을 하고 스터디에 참여하세요!</p>
+        )}
+        {(isLoggedIn && ongoingStudyList.length === 0) ? (
+          <p>진행 중인 스터디가 없습니다.</p>
+        ) : (ongoingStudyList?.map((study) => (
           <StudyStatus
             key={study.id}
             id={study.id}
@@ -72,11 +79,11 @@ export default function Home() {
             role={study.role}
             participantsMax={study.participantsMax}
           />
-        ))}
+        )))}
       </div>
       <div className={styles.subtitle}>최근 올라온 스터디</div>
       <div className={styles.wrapperStyles}>
-        {recruitingStudyList?.map((study, index) => (
+        {recruitingStudyList?.map((study) => (
           <StudySearch
             key={study.id}
             id={study.id}

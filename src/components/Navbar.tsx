@@ -4,7 +4,6 @@ import Link from 'next/link';
 import styles from './Navbar.module.css';
 import { useUser } from '@/context/UserContext';
 import { logout } from '@/api/user';
-import { useRouter } from 'next/navigation';
 
 interface NavbarProps {
     brand?: { label: string; href: string };
@@ -15,7 +14,6 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
     const { user, isLoggedIn, loading, setIsLoggedIn, setUser } = useUser();
     const [isMyMenuOpen, setIsMyMenuOpen] = useState(false);
-    const router = useRouter();
 
     const handleLogout = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,16 +22,11 @@ const Navbar: React.FC<NavbarProps> = ({
             setUser(null);
             setIsLoggedIn(false);
             alert('로그아웃 성공');
-            router.push('/');
+            window.location.href = '/';
         } catch (err) {
             console.log(err);
         }
-  
     }
-
-    console.log("user ", user);
-    console.log("isLoggedIn ", isLoggedIn);
-    console.log("로딩 ", loading);
 
     return (
         <nav className={styles.navbar}>
