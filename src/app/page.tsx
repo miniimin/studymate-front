@@ -34,13 +34,9 @@ export default function Home() {
   const fetch = async () => {
     try {
       const res = await getMain();
-      if (res.data.ongoingStudyList !== null) {
-        setOngoingStudyList(res.data.ongoingStudyList);
-      }
-      if (res.data.recruitingStudyList.studies.length > 0) {
-        setRecruitingStudyList(res.data.recruitingStudyList.studies);
-        console.log("뭐지" + recruitingStudyList);
-      }
+      console.log(res.data);
+      setOngoingStudyList(res.data.ongoingStudyList.content);
+      setRecruitingStudyList(res.data.recruitingStudyList.studies);
     } catch (err) {
       console.error(err);
     }
@@ -65,7 +61,7 @@ export default function Home() {
       </div>
       <div className={styles.subtitle}>나의 진행 중인 스터디</div>
       <div className={styles.wrapperStyles}>
-        {ongoingStudyList.map((study, index) => (
+        {ongoingStudyList?.map((study, index) => (
           <StudyStatus
             key={study.id}
             id={study.id}
@@ -80,7 +76,7 @@ export default function Home() {
       </div>
       <div className={styles.subtitle}>최근 올라온 스터디</div>
       <div className={styles.wrapperStyles}>
-        {recruitingStudyList.map((study, index) => (
+        {recruitingStudyList?.map((study, index) => (
           <StudySearch
             key={study.id}
             id={study.id}
