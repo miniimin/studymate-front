@@ -1,7 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './page.module.css';
-import RecordList from '@/components/RecordList';
+import RecordDetail from '@/components/RecordDetail';
 import { redirect, useParams } from 'next/navigation';
 import { getStudyFeed } from '@/api/page';
 import { joinStudy, submitRecord } from '@/api/study';
@@ -16,65 +16,47 @@ interface StudyDetail {
   endDate: string;
   participantsMax: number;
   recruitDeadline: string;
-  records: RecordList[];
 }
 
 interface RecordList {
   id: number;
-  studyGroupId: number;
   authorName: string;
   title: string;
-  content: string;
   createdAt: string;
+  content?: string;
+  comments?: [];
 }
 
 export default function StudyDetailPage() {
   const { isLoggedIn } = useUser();
-  const { id: studyId } = useParams();
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const { id: studyId } = useParams() as { id: string };
 
   const [isParticipant, setIsParticipant] = useState(false);
-  const [studyDetail, setStudyDetail] = useState<StudyDetail | null>(null);
+  const [studyDetail, setStudyDetail] = useState<StudyDetail>();
   const [participantNum, setParticipantNum] = useState(0);
-  const [recordList, setRecordList] = useState<RecordList[]>([]);
+  const [recordList, setRecordList] = useState<RecordList[]>();
 
   const [showForm, setShowForm] = useState(false);
   const [newRecord, setNewRecord] = useState({ title: '', content: '' });
 
+  const fetchStudy = async () => {
+    if (!studyId) return;
+    try {
+      const res = await getStudyFeed(studyId);
+      setIsParticipant(res.data.isParticipant);
+      setStudyDetail(res.data.studyDetail);
+      setParticipantNum(res.data.participantNum);
+      setRecordList(res.data.recordList);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    if (!studyId || typeof studyId !== 'string') return;
-
-    const fetchStudy = async () => {
-      try {
-        const res = await getStudyFeed(studyId);
-        setIsParticipant(res.data.isParticipant);
-        setStudyDetail(res.data.studyDetail);
-        setParticipantNum(res.data.participantNum);
-        setRecordList(res.data.recordList);
-      } catch (err) {
-        setError('스터디 정보를 불러오는 데 실패했습니다.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStudy();
   }, [studyId]);
 
-  if (loading) return <p>로딩 중...</p>;
-  if (error) return <p>{error}</p>;
-  if (!studyDetail) return <p>데이터가 없습니다.</p>;
-
-  const isEnded = new Date() > new Date(studyDetail.endDate);
-  const toggleForm = () => setShowForm(prev => !prev);
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewRecord(prev => ({ ...prev, [name]: value }));
-  };
+  const isEnded = studyDetail && new Date() > new Date(studyDetail.endDate);
 
   const handleJoinStudy = async (e: any) => {
     if (!isLoggedIn) return alert('로그인이 필요합니다.');
@@ -90,6 +72,13 @@ export default function StudyDetailPage() {
     }
   }
 
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setNewRecord(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 기록 제출 관련 
+  const toggleRecordSubmitForm = () => setShowForm(prev => !prev);
   const handleRecordSubmit = async (e: any) => {
     try {
       const res = await submitRecord(studyId, newRecord);
@@ -99,15 +88,21 @@ export default function StudyDetailPage() {
     }
   }
 
+  // 기록 내용 보기
+  const [openRecordId, setOpenRecordId] = useState<number | null>(null);
+  const toggleRecordDetail = (id: number) => {
+    setOpenRecordId(prev => (prev === id ? null : id));
+  };
+
   return (
     <>
       <section className={styles.studyInfo}>
-        <h2>{studyDetail.title}</h2>
-        <p>{studyDetail.description}</p>
+        <h2>{studyDetail?.title}</h2>
+        <p>{studyDetail?.description}</p>
         <ul>
-          <li>스터디 기간</li><li>{studyDetail.startDate} ~ {studyDetail.endDate}</li>
-          <li>참여인원</li><li>{participantNum} / {studyDetail.participantsMax}</li>
-          <li>방장</li><li>{studyDetail.creatorName}</li>
+          <li>스터디 기간</li><li>{studyDetail?.startDate} ~ {studyDetail?.endDate}</li>
+          <li>참여인원</li><li>{participantNum} / {studyDetail?.participantsMax}</li>
+          <li>방장</li><li>{studyDetail?.creatorName}</li>
         </ul>
       </section>
       <section className={styles.buttonSection}>
@@ -117,7 +112,7 @@ export default function StudyDetailPage() {
               <div className={styles.finished}>스터디 완료</div>
             ) : (
               <>
-                <button className={styles.recordToggleButton} onClick={toggleForm}>기록 남기기</button>
+                <button className={styles.recordToggleButton} onClick={toggleRecordSubmitForm}>기록 남기기</button>
                 {showForm && (
                   <form className={styles.recordForm}>
                     <div className={styles.fieldGroup}>
@@ -141,11 +136,27 @@ export default function StudyDetailPage() {
           <button className={styles.joinButton} onClick={handleJoinStudy}>참여하기</button>
         )}
       </section>
-      <RecordList
-        records={recordList}
-        isParticipant={isParticipant}
-      />
-      {/*<StatusBoard members={studyData.members} />*/}
+      <section>
+        <h2>기록 목록</h2>
+        <div className={styles.recordList}>
+          <ul>
+            <li>작성자</li>
+            <li>제목</li>
+            <li>날짜</li>
+          </ul>
+          {recordList?.map((r) => (
+            <React.Fragment key={r.id}>
+              <ul onClick={() => toggleRecordDetail(r.id)} className={styles.recordRow}>
+                <li>{r.authorName}</li>
+                <li>{r.title}</li>
+                <li>{r.createdAt.toString().split("T")[0]}</li>
+              </ul>
+              {isParticipant && openRecordId === r.id &&
+                <RecordDetail recordId={r.id} content={r.content} comments={r.comments} />}
+            </React.Fragment>
+          ))}
+        </div>
+      </section>
     </>
   );
 }

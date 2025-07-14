@@ -21,3 +21,9 @@ export const submitRecord = async(studyId: any, newRecord: any) => {
     const response = await axios.post(`${apiUrl}/api/studies/${studyId}/records`, newRecord);
     return response;
 }
+
+// 덧글 남기기
+export const submitComment = async (recordId: any, comment: any) => {
+    const response = await axios.post(`${apiUrl}/api/records/${recordId}/comments`, { content: comment });
+    return response;
+}
