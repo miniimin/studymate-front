@@ -17,7 +17,7 @@ export const joinStudy = async (studyId: any) => {
 }
 
 // 기록 남기기
-export const submitRecord = async(studyId: any, newRecord: any) => {
+export const submitRecord = async (studyId: any, newRecord: any) => {
     const response = await axios.post(`${apiUrl}/api/studies/${studyId}/records`, newRecord);
     return response;
 }
@@ -25,5 +25,22 @@ export const submitRecord = async(studyId: any, newRecord: any) => {
 // 덧글 남기기
 export const submitComment = async (recordId: any, comment: any) => {
     const response = await axios.post(`${apiUrl}/api/records/${recordId}/comments`, { content: comment });
+    return response;
+}
+
+// 특정 기록의 덧글 전체 가져오기
+export const getComments = async (recordId: any) => {
+    const response = await axios.get(`${apiUrl}/api/records/${recordId}/comments`);
+    return response.data;
+}
+
+// 특정 스터디의 기록 페이지 패치
+export const getRecordPage = async (studyId: any, pageNum: number) => {
+    const response = await axios.get(`${apiUrl}/api/page/studies/${studyId}/records`, {
+        params: {
+            page: pageNum,
+            size: 5
+        }
+    });
     return response;
 }

@@ -56,7 +56,6 @@ export const getSearchStudy = async (currentPage: any, query: any) => {
 // 스터디 상세조회 페이지
 export const getStudyFeed = async (studyId: string) => {
     const response = await axios.get(`${apiUrl}/api/page/studies/${studyId}`);
-    console.log(response);
     return response;
 }
 

@@ -1,10 +1,11 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import styles from './page.module.css';
 import RecordDetail from '@/components/RecordDetail';
-import { redirect, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { getStudyFeed } from '@/api/page';
-import { joinStudy, submitRecord } from '@/api/study';
+import { joinStudy, submitRecord, getRecordPage } from '@/api/study';
 import { useUser } from '@/context/UserContext';
 
 interface StudyDetail {
@@ -36,6 +37,13 @@ export default function StudyDetailPage() {
   const [participantNum, setParticipantNum] = useState(0);
   const [recordList, setRecordList] = useState<RecordList[]>();
 
+  // 페이징
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const blockSize = 5;
+  const pageBlock = Math.floor((currentPage - 1) / blockSize);
+
+
   const [showForm, setShowForm] = useState(false);
   const [newRecord, setNewRecord] = useState({ title: '', content: '' });
 
@@ -47,6 +55,7 @@ export default function StudyDetailPage() {
       setStudyDetail(res.data.studyDetail);
       setParticipantNum(res.data.participantNum);
       setRecordList(res.data.recordList);
+      setTotalPages(res.data.totalPages);
     } catch (err) {
       console.error(err);
     }
@@ -77,6 +86,22 @@ export default function StudyDetailPage() {
     setNewRecord(prev => ({ ...prev, [name]: value }));
   };
 
+  const fetchRecordPage = async (currentPage: number) => {
+    try {
+      const res = await getRecordPage(studyId, currentPage);
+      console.log("작동?", res.data);
+      setRecordList(res.data?.recordList);
+      setTotalPages(res.data?.totalPages);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    fetchRecordPage(currentPage);
+  }, [currentPage])
+
+
   // 기록 제출 관련 
   const toggleRecordSubmitForm = () => setShowForm(prev => !prev);
   const handleRecordSubmit = async (e: any) => {
@@ -100,7 +125,7 @@ export default function StudyDetailPage() {
         <h2>{studyDetail?.title}</h2>
         <p>{studyDetail?.description}</p>
         <ul>
-          <li>스터디 기간</li><li>{studyDetail?.startDate} ~ {studyDetail?.endDate}</li>
+          <li>스터디 기간</li><li>{studyDetail?.startDate.toString().split("T")[0]} ~ {studyDetail?.endDate.toString().split("T")[0]}</li>
           <li>참여인원</li><li>{participantNum} / {studyDetail?.participantsMax}</li>
           <li>방장</li><li>{studyDetail?.creatorName}</li>
         </ul>
@@ -146,15 +171,47 @@ export default function StudyDetailPage() {
           </ul>
           {recordList?.map((r) => (
             <React.Fragment key={r.id}>
-              <ul onClick={() => toggleRecordDetail(r.id)} className={styles.recordRow}>
+              <ul onClick={() => toggleRecordDetail(r.id)}
+                className={isParticipant
+                  ? styles.recordRowParticipant
+                  : styles.recordRow}>
                 <li>{r.authorName}</li>
                 <li>{r.title}</li>
                 <li>{r.createdAt.toString().split("T")[0]}</li>
               </ul>
               {isParticipant && openRecordId === r.id &&
-                <RecordDetail recordId={r.id} content={r.content} comments={r.comments} />}
+                <RecordDetail
+                  recordId={r.id}
+                  content={r.content}
+                  comments={r.comments} />}
             </React.Fragment>
           ))}
+          <div className={styles.pagination}>
+            <div>{pageBlock > 0 &&
+              <button onClick={() => setCurrentPage((pageBlock - 1) * blockSize + 1)}
+                className={styles.blockButton}>
+                이전
+              </button>
+            }
+              {Array.from({ length: blockSize }, (_, index) => {
+                const firstPage = pageBlock * blockSize + 1;
+                const pageNumber = firstPage + index;
+                if (pageNumber > totalPages) return null;
+                return (
+                  <button key={index}
+                    className={currentPage === pageNumber ? styles.currentPageButton : styles.pageButton}
+                    onClick={() => setCurrentPage(pageNumber)}>
+                    {pageNumber}
+                  </button>)
+              })}
+              {(pageBlock + 1) * blockSize < totalPages &&
+                <button onClick={() => setCurrentPage((pageBlock + 1) * blockSize + 1)}
+                  className={styles.blockButton}>
+                  다음
+                </button>
+              }
+            </div>
+          </div>
         </div>
       </section>
     </>
