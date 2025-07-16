@@ -5,7 +5,7 @@ import styles from './page.module.css';
 import RecordDetail from '@/components/RecordDetail';
 import { useParams } from 'next/navigation';
 import { getStudyFeed } from '@/api/page';
-import { joinStudy, submitRecord, getRecordPage } from '@/api/study';
+import { joinStudy, submitRecord, getRecordPage, getComments } from '@/api/study';
 import { useUser } from '@/context/UserContext';
 
 interface StudyDetail {
@@ -26,6 +26,13 @@ interface RecordList {
   createdAt: string;
   content?: string;
   comments?: [];
+}
+
+interface StudyComment {
+  id: number;
+  authorName: string;
+  content: string;
+  createdAt: string;
 }
 
 export default function StudyDetailPage() {
@@ -89,7 +96,6 @@ export default function StudyDetailPage() {
   const fetchRecordPage = async (currentPage: number) => {
     try {
       const res = await getRecordPage(studyId, currentPage);
-      console.log("작동?", res.data);
       setRecordList(res.data?.recordList);
       setTotalPages(res.data?.totalPages);
     } catch (err) {
@@ -101,13 +107,26 @@ export default function StudyDetailPage() {
     fetchRecordPage(currentPage);
   }, [currentPage])
 
+  const fetchCommentsForRecord = async (recordId: number) => {
+    try {
+      const res = await getComments(recordId);
+      setRecordList((prev) =>
+        prev?.map((r) =>
+          r.id === recordId ? { ...r, comments: res.data } : r
+        )
+      );
+    } catch (err) {
+      console.error('댓글 불러오기 실패', err);
+    }
+  };
+
 
   // 기록 제출 관련 
   const toggleRecordSubmitForm = () => setShowForm(prev => !prev);
   const handleRecordSubmit = async (e: any) => {
     try {
       const res = await submitRecord(studyId, newRecord);
-      location.reload();
+      setCurrentPage(1);
     } catch (err) {
       alert('제출 실패');
     }
@@ -182,8 +201,10 @@ export default function StudyDetailPage() {
               {isParticipant && openRecordId === r.id &&
                 <RecordDetail
                   recordId={r.id}
-                  content={r.content}
-                  comments={r.comments} />}
+                  content={r.content ?? ''}
+                  comments={r.comments ?? []}
+                  onCommentSubmit={fetchCommentsForRecord} />
+                  /* 갱신 함수를 하위 컴포넌트로 전달 */} 
             </React.Fragment>
           ))}
           <div className={styles.pagination}>

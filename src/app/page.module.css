@@ -24,7 +24,7 @@
   padding: 3rem;
   border-radius: 1rem;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
 }
 
 .intro ol {
@@ -45,10 +45,17 @@
   text-align: center;
 }
 
+.subtitleWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 2rem 0 1rem;
+  align-items: center;
+}
+
 .subtitle {
   font-size: 1.5rem;
   font-weight: 600;
-  margin: 2rem 0 1rem;
   border-left: 6px solid #6c7ae0;
   padding-left: 1rem;
   color: #2c3e50;
@@ -63,7 +70,7 @@
 
 @media screen and (max-width: 768px) {
   .intro {
-    padding: 2rem 1.5rem ; 
+    padding: 2rem 1.5rem;
   }
 
   .subtitle {

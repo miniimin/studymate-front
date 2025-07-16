@@ -6,14 +6,19 @@
   margin:0;
 }
 
-.recordBody p {
-  margin-bottom: 0.8rem;
-  line-height: 1.6;
-}
-
 .recordBody h4 {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
+}
+
+.recordContent {
+  border: 0;
+  width: 100%;
+  font-size: 1rem;
+  height: 100%;
+  margin-bottom: 0.8rem;
+  white-space: pre-line;
+
 }
 
 .commentBody {

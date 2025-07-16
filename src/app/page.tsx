@@ -5,6 +5,7 @@ import StudyStatus from "@/components/study-card/StudyStatus";
 import { getMain } from "@/api/page";
 import { useEffect, useState } from "react";
 import { useUser } from '@/context/UserContext';
+import Link from "next/link";
 
 interface MyStudyList {
   id: number;
@@ -61,7 +62,10 @@ export default function Home() {
           </ol>
         </div>
       </div>
-      <div className={styles.subtitle}>나의 진행 중인 스터디</div>
+      <div className={styles.subtitleWrapper}>
+        <div className={styles.subtitle}>나의 진행 중인 스터디</div>
+        {isLoggedIn &&<Link href={'/study/my-study'}><p>더보기 ＞</p></Link>}
+      </div>
       <div className={styles.wrapperStyles}>
         {!isLoggedIn && (
           <p>로그인을 하고 스터디에 참여하세요!</p>
@@ -81,7 +85,10 @@ export default function Home() {
           />
         )))}
       </div>
-      <div className={styles.subtitle}>최근 올라온 스터디</div>
+      <div className={styles.subtitleWrapper}>
+        <div className={styles.subtitle}>최근 올라온 스터디</div>
+        <Link href={'/study/search'}><p>더보기 ＞</p></Link>
+      </div>
       <div className={styles.wrapperStyles}>
         {recruitingStudyList?.map((study) => (
           <StudySearch

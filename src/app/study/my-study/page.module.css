@@ -16,6 +16,15 @@
   background-color: #e1e6f8;
 }
 
+.subtitle {
+  margin: 2rem 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-left: 6px solid #6c7ae0;
+  padding-left: 1rem;
+  color: #2c3e50;
+}
+
 
 /* 페이지네이션 css */
 

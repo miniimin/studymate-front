@@ -34,11 +34,11 @@ export default function NewStudyPage() {
     const payload = {
       ...form,
       startDate: `${form.startDate}T00:00:00`,
-      endDate: `${form.endDate}T00:00:00`,
+      endDate: `${form.endDate}T23:59:59`,
       recruitDeadline:
         form.alwaysRecruit === 'beforeStart'
           ? `${form.startDate}T00:00:00`
-          : `${form.endDate}T00:00:00`
+          : `${form.endDate}T23:59:59`
     };
 
     console.log(form);

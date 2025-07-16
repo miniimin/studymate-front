@@ -22,7 +22,7 @@ export const getOngoingStudy = async (pageNum: any) => {
     const response = await axios.get(`${apiUrl}/api/users/me/studies/ongoing`, {
         params: {
             page: pageNum,
-            size: 2
+            size: 4
         }
     });
     return response;
@@ -33,7 +33,7 @@ export const getCompletedStudy = async (pageNum: any) => {
     const response = await axios.get(`${apiUrl}/api/users/me/studies/completed`, {
         params: {
             page: pageNum,
-            size: 2
+            size: 4
         }
     });
     return response;

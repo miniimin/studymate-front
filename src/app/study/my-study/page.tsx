@@ -91,7 +91,7 @@ export default function MyStudyPage() {
         </button>
       </Link>
 
-      <div className={globalStyles.subtitle}>나의 진행 중인 스터디</div>
+      <div className={styles.subtitle}>나의 진행 중인 스터디</div>
       <div className={globalStyles.wrapperStyles}>
         {ongoingStudyList &&
           (!ongoingStudyList.studies || ongoingStudyList.studies.length === 0) ? (
@@ -140,7 +140,7 @@ export default function MyStudyPage() {
           )}
         </div>
       )}
-      <div className={globalStyles.subtitle}>나의 완료 스터디</div>
+      <div className={styles.subtitle}>나의 완료 스터디</div>
       <div className={globalStyles.wrapperStyles}>
         {completedStudyList &&
           (!completedStudyList.studies || completedStudyList.studies.length === 0) ? (

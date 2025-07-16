@@ -31,10 +31,10 @@ export const submitComment = async (recordId: any, comment: any) => {
 // 특정 기록의 덧글 전체 가져오기
 export const getComments = async (recordId: any) => {
     const response = await axios.get(`${apiUrl}/api/records/${recordId}/comments`);
-    return response.data;
+    return response;
 }
 
-// 특정 스터디의 기록 페이지 패치
+// 특정 스터디의 기록 목록을 페이지 단위로 조회
 export const getRecordPage = async (studyId: any, pageNum: number) => {
     const response = await axios.get(`${apiUrl}/api/page/studies/${studyId}/records`, {
         params: {

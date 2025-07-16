@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styles from './RecordList.module.css';
 import { submitComment } from '@/api/study';
-import { getComments } from '@/api/study';
 
 interface StudyComment {
   id: number;
@@ -11,15 +10,16 @@ interface StudyComment {
 }
 
 interface RecordDetailProps {
-  recordId?: number;
-  content?: string;
-  comments?: StudyComment[];
+  recordId: number;
+  content: string;
+  comments: StudyComment[];
+  onCommentSubmit: (recordId: number) => void;
 }
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return date.toLocaleString([], {
-    hour12:false,
+    hour12: false,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -28,23 +28,22 @@ const formatDate = (dateString: string) => {
   });
 }
 
-export default function RecordDetail({ recordId, content, comments }: RecordDetailProps) {
+export default function RecordDetail({ recordId, content, comments = [], onCommentSubmit }: RecordDetailProps) {
   const [comment, setComment] = useState('');
-  const [commentList, setCommentList] = useState<StudyComment[]>(comments || []);
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!comment.trim()) return;
     await submitComment(recordId, comment);
     setComment('');
-    const updatedComments = await getComments(recordId);
-    setCommentList(updatedComments);
+    onCommentSubmit(recordId);
   };
 
   return (
     <div className={styles.recordBody}>
-      <p>{content}</p>
+      <div className={styles.recordContent}>{content}</div>
       <h4>💬 댓글</h4>
-      {(commentList || []).map((c) => (
+      {comments.map((c) => (
         <ul key={c.id} className={styles.commentBody}>
           <li>{c.authorName}</li>
           <li>{c.content}</li>
