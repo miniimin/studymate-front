@@ -5,7 +5,8 @@ import globalStyles from "@/app/page.module.css";
 import styles from "./page.module.css";
 import StudyStatus from "@/components/study-card/StudyStatus";
 import Link from "next/link";
-import { getMyStudy, getOngoingStudy, getCompletedStudy } from "@/api/page";
+import { getOngoingStudy, getCompletedStudy } from "@/api/page";
+import { useUser } from "@/context/UserContext";
 
 interface MyStudyList {
   id: number;

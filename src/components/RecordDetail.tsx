@@ -11,6 +11,7 @@ interface StudyComment {
 
 interface RecordDetailProps {
   recordId: number;
+  isAuthor: boolean;
   content: string;
   comments: StudyComment[];
   onCommentSubmit: (recordId: number) => void;
@@ -28,7 +29,7 @@ const formatDate = (dateString: string) => {
   });
 }
 
-export default function RecordDetail({ recordId, content, comments = [], onCommentSubmit }: RecordDetailProps) {
+export default function RecordDetail({ recordId, isAuthor, content, comments = [], onCommentSubmit }: RecordDetailProps) {
   const [comment, setComment] = useState('');
 
   const handleComment = async (e: React.FormEvent) => {
@@ -42,6 +43,9 @@ export default function RecordDetail({ recordId, content, comments = [], onComme
   return (
     <div className={styles.recordBody}>
       <div className={styles.recordContent}>{content}</div>
+      {isAuthor && <div className={styles.buttonGroup}>
+        <button className={styles.modifyButton}>수정</button>
+      </div>}
       <h4>💬 댓글</h4>
       {comments.map((c) => (
         <ul key={c.id} className={styles.commentBody}>

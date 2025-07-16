@@ -36,7 +36,7 @@ interface StudyComment {
 }
 
 export default function StudyDetailPage() {
-  const { isLoggedIn } = useUser();
+  const { isLoggedIn, user } = useUser();
   const { id: studyId } = useParams() as { id: string };
 
   const [isParticipant, setIsParticipant] = useState(false);
@@ -58,6 +58,7 @@ export default function StudyDetailPage() {
     if (!studyId) return;
     try {
       const res = await getStudyFeed(studyId);
+      console.log(res.data);
       setIsParticipant(res.data.isParticipant);
       setStudyDetail(res.data.studyDetail);
       setParticipantNum(res.data.participantNum);
@@ -201,10 +202,11 @@ export default function StudyDetailPage() {
               {isParticipant && openRecordId === r.id &&
                 <RecordDetail
                   recordId={r.id}
+                  isAuthor={user && user.nickname === r.authorName ? true : false}
                   content={r.content ?? ''}
                   comments={r.comments ?? []}
                   onCommentSubmit={fetchCommentsForRecord} />
-                  /* 갱신 함수를 하위 컴포넌트로 전달 */} 
+                  /* 갱신 함수를 하위 컴포넌트로 전달 */}
             </React.Fragment>
           ))}
           <div className={styles.pagination}>

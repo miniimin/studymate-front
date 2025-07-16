@@ -3,7 +3,7 @@
   border: 1px solid #ddd;
   border-top: 0px;
   padding: 1rem;
-  margin:0;
+  margin: 0;
 }
 
 .recordBody h4 {
@@ -16,9 +16,21 @@
   width: 100%;
   font-size: 1rem;
   height: 100%;
-  margin-bottom: 0.8rem;
+  margin-bottom: 2rem;
   white-space: pre-line;
+  line-height: 1.6rem;
+}
 
+.buttonGroup {
+  text-align: right;
+}
+
+.modifyButton {
+  border: 1px solid #b1b1b1;
+  background-color: #ffffff;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
 }
 
 .commentBody {
@@ -26,11 +38,11 @@
   padding: 1rem 0;
 }
 
-.commentBody li:nth-child(1){
+.commentBody li:nth-child(1) {
   font-weight: bold;
 }
 
-.commentBody li:nth-child(3){
+.commentBody li:nth-child(3) {
   margin-top: 2px;
   font-size: 0.8rem;
   color: #686868;
