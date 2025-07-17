@@ -39,7 +39,7 @@
 }
 
 .modifyForm h4 {
-  text-align: center;
+  text-align: centerg;
 }
 
 .label {
@@ -60,7 +60,7 @@
 }
 
 .textarea {
-  min-height: 120px;
+  min-height: 200px;
   resize: vertical;
 }
 

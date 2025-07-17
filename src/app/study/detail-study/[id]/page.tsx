@@ -35,6 +35,10 @@ interface StudyComment {
   createdAt: string;
 }
 
+interface Participants {
+  nickname: string;
+}
+
 export default function StudyDetailPage() {
   const { isLoggedIn, user } = useUser();
   const { id: studyId } = useParams() as { id: string };
@@ -43,6 +47,7 @@ export default function StudyDetailPage() {
   const [studyDetail, setStudyDetail] = useState<StudyDetail>();
   const [participantNum, setParticipantNum] = useState(0);
   const [recordList, setRecordList] = useState<RecordList[]>();
+  const [participants, setParticipants] = useState<Participants[]>();
 
   // 페이징
   const [totalPages, setTotalPages] = useState(1);
@@ -62,6 +67,7 @@ export default function StudyDetailPage() {
       setParticipantNum(res.data.participantNum);
       setRecordList(res.data.recordList);
       setTotalPages(res.data.totalPages);
+      setParticipants(res.data.participantsList);
     } catch (err) {
       console.error(err);
     }
@@ -165,6 +171,7 @@ export default function StudyDetailPage() {
           <li>스터디 기간</li><li>{studyDetail?.startDate.toString().split("T")[0]} ~ {studyDetail?.endDate.toString().split("T")[0]}</li>
           <li>참여인원</li><li>{participantNum} / {studyDetail?.participantsMax}</li>
           <li>방장</li><li>{studyDetail?.creatorName}</li>
+          <li>멤버</li><li>{participants?.map((p, i) => (<span className={styles.memberList} key={i}>{p.nickname}</span>))}</li>
         </ul>
       </section>
       <section className={styles.buttonSection}>

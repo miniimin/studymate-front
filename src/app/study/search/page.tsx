@@ -45,7 +45,6 @@ export default function StudySearchPage() {
       const data: Study[] = response.data.searchStudyPageData.studies;
       setStudies(data);
       setTotalPages(parseInt(response.data.searchStudyPageData.totalPages));
-      console.log(data);
     } catch (err) {
       console.error(err);
     }

@@ -33,6 +33,17 @@
   color: #333;
 }
 
+.memberList:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin: 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+  background-color: #5b5b5b;
+}
+
 .buttonSection {
   display: flex;
   align-items: center;
@@ -77,10 +88,11 @@
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
+  outline: none;
 }
 
 .textarea {
-  min-height: 120px;
+  min-height: 200px;
   resize: vertical;
 }
 
@@ -130,7 +142,7 @@
   font-weight: 900;
 }
 
-.recordList > ul {
+.recordList>ul {
   display: grid;
   justify-content: space-between;
   border-bottom: 1px solid #ddd;
@@ -140,21 +152,21 @@
   text-align: center;
 }
 
-.recordList > ul:first-child {
+.recordList>ul:first-child {
   font-weight: bold;
   padding: 1rem 0;
   background-color: #f7f7f7;
 }
 
-.recordList > ul:not(:first-child) li:nth-child(2) {
+.recordList>ul:not(:first-child) li:nth-child(2) {
   text-align: left;
   padding-left: 1rem;
 }
 
-.recordRowParticipant:hover{
+.recordRowParticipant:hover {
   cursor: pointer;
   background-color: #efefef;
-} 
+}
 
 /* 페이지네이션 css */
 
@@ -172,9 +184,9 @@
   border: none;
   margin: 0;
   padding: 0;
-  appearance: none; 
+  appearance: none;
   font-size: 1rem;
-  color:#323232
+  color: #323232
 }
 
 .pageButton:hover {
@@ -188,7 +200,7 @@
   border: none;
   margin: 0;
   padding: 0;
-  appearance: none; 
+  appearance: none;
   font-size: 1rem;
   color: #4e4e4e;
 }
