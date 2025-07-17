@@ -50,7 +50,6 @@ export default function StudyDetailPage() {
   const blockSize = 5;
   const pageBlock = Math.floor((currentPage - 1) / blockSize);
 
-
   const [showForm, setShowForm] = useState(false);
   const [newRecord, setNewRecord] = useState({ title: '', content: '' });
 
@@ -58,7 +57,6 @@ export default function StudyDetailPage() {
     if (!studyId) return;
     try {
       const res = await getStudyFeed(studyId);
-      console.log(res.data);
       setIsParticipant(res.data.isParticipant);
       setStudyDetail(res.data.studyDetail);
       setParticipantNum(res.data.participantNum);
@@ -94,6 +92,7 @@ export default function StudyDetailPage() {
     setNewRecord(prev => ({ ...prev, [name]: value }));
   };
 
+  // 한 페이지 전체 패치
   const fetchRecordPage = async (currentPage: number) => {
     try {
       const res = await getRecordPage(studyId, currentPage);
@@ -106,8 +105,27 @@ export default function StudyDetailPage() {
 
   useEffect(() => {
     fetchRecordPage(currentPage);
+    setOpenRecordId(null);
   }, [currentPage])
 
+  // 기록 수정시 제목이랑 내용 업데이트
+  const fetchRecord = async (updatedRecord: any) => {
+    try {
+      setRecordList((prev) =>
+        prev?.map((r) =>
+          r.id === updatedRecord.id ? {
+            ...r,
+            title:updatedRecord.title,
+            content: updatedRecord.content,
+          } : r
+        )
+      )
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // 덧글 전체 패치
   const fetchCommentsForRecord = async (recordId: number) => {
     try {
       const res = await getComments(recordId);
@@ -120,7 +138,6 @@ export default function StudyDetailPage() {
       console.error('댓글 불러오기 실패', err);
     }
   };
-
 
   // 기록 제출 관련 
   const toggleRecordSubmitForm = () => setShowForm(prev => !prev);
@@ -203,9 +220,11 @@ export default function StudyDetailPage() {
                 <RecordDetail
                   recordId={r.id}
                   isAuthor={user && user.nickname === r.authorName ? true : false}
+                  title={r.title ?? ''}
                   content={r.content ?? ''}
                   comments={r.comments ?? []}
-                  onCommentSubmit={fetchCommentsForRecord} />
+                  onCommentSubmit={fetchCommentsForRecord}
+                  onRecordModify={fetchRecord} />
                   /* 갱신 함수를 하위 컴포넌트로 전달 */}
             </React.Fragment>
           ))}
