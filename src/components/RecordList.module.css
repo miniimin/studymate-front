@@ -39,7 +39,7 @@
 }
 
 .modifyForm h4 {
-  text-align: centerg;
+  text-align: center;
 }
 
 .label {
@@ -65,8 +65,11 @@
 }
 
 .commentBody {
+  display: flex;
+  flex-direction: column;
   border-top: 1px solid #ddd;
   padding: 1rem 0;
+  gap:5px;
 }
 
 .commentBody li:nth-child(1) {
@@ -90,6 +93,8 @@
   padding: 0.5rem;
   border-radius: 4px;
   border: 1px solid #ccc;
+  outline: none;
+  font-size: 1rem;
 }
 
 .commentButton {
@@ -103,4 +108,10 @@
 
 .commentButton:hover {
   background-color: #5a68cc;
+}
+
+.commentButtonGroup {
+  display:flex;
+  text-align: left;
+  gap:3px;
 }

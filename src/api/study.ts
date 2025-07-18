@@ -16,6 +16,8 @@ export const joinStudy = async (studyId: any) => {
     return response;
 }
 
+
+
 // 기록 남기기
 export const submitRecord = async (studyId: any, newRecord: any) => {
     const response = await axios.post(`${apiUrl}/api/studies/${studyId}/records`, newRecord);
@@ -28,11 +30,21 @@ export const modifyRecord = async (recordId: any, modifiedRecord: any) => {
     return response;
 }
 
+
+
 // 덧글 남기기
 export const submitComment = async (recordId: any, comment: any) => {
     const response = await axios.post(`${apiUrl}/api/records/${recordId}/comments`, { content: comment });
     return response;
 }
+
+// 덧글 수정하기
+export const modifyComment = async (commentId: any, comment: any) => {
+    const response = await axios.put(`${apiUrl}/api/comments/${commentId}`, { content: comment });
+    return response;
+}
+
+
 
 // 특정 기록의 덧글 전체 가져오기
 export const getComments = async (recordId: any) => {
@@ -50,9 +62,3 @@ export const getRecordPage = async (studyId: any, pageNum: number) => {
     });
     return response;
 }
-
-// // 특정 기록 하나 가져오기
-// export const getRecord = async (studyId: any, recordId: any) => {
-//     const response = await axios.get(`${apiUrl}/api/page/studies/${studyId}/records/${recordId}`);
-//     return response;
-// }
