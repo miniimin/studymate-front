@@ -11,6 +11,7 @@ export const getMain = async () => {
 }
 
 
+
 // 나의 스터디 페이지
 export const getMyStudy = async () => {
     const response = await axios.get(`${apiUrl}/api/page/my-study`);
@@ -40,6 +41,7 @@ export const getCompletedStudy = async (pageNum: any) => {
 }
 
 
+
 // 스터디 검색 페이지
 export const getSearchStudy = async (currentPage: any, query: any) => {
     const response = await axios.get(`${apiUrl}/api/page/search-study`, {
@@ -51,6 +53,7 @@ export const getSearchStudy = async (currentPage: any, query: any) => {
     });
     return response;
 }
+
 
 
 // 스터디 상세조회 페이지
