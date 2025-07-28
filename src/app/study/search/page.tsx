@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import StudySearch from "@/components/study-card/StudySearch";
 import { getSearchStudy } from "@/api/page";
 import { useRouter, useSearchParams } from "next/navigation";
+import PaginationComponent from "@/components/pagination/Pagination";
 
 interface Study {
   id: number;
@@ -33,10 +34,6 @@ export default function StudySearchPage() {
 
   // 사용자가 입력하는 쿼리 값
   const [inputQuery, setInputQuery] = useState(queryParam);
-
-  // 현재 페이지 기준으로 블록 시작번호 계산
-  const currentBlock = Math.floor((pageParam - 1) / blockSize);
-  const startPage = currentBlock * blockSize + 1;
 
   // 쿼리스트링 변경될 때 fetchStudy 호출하여 API에서 스터디 목록 받아오기
   const fetchStudy = async () => {
@@ -95,30 +92,10 @@ export default function StudySearchPage() {
         />
       ))}
     </div>
-
-    <div className={styles.pagination}>
-      {(currentBlock > 0) && (
-        <button onClick={() => movePage((currentBlock - 1) * blockSize + 1)} className={styles.blockButton}>
-          이전
-        </button>)}
-      {Array.from({ length: blockSize }, (_, index) => {
-        const pageNumber = startPage + index;
-        if (pageNumber > totalPages) return null;
-        return (
-          <button
-            key={index}
-            onClick={() => movePage(pageNumber)}
-            disabled={pageNumber === pageParam}
-            className={styles.pageButton}>
-            {pageNumber}
-          </button>
-        );
-      })}
-      {(currentBlock + 1) * blockSize < totalPages && (
-        <button onClick={() => movePage((currentBlock + 1) * blockSize + 1)} className={styles.blockButton}>
-          다음
-        </button>
-      )}
-    </div>
+    <PaginationComponent
+      currentPage={pageParam}
+      totalPages={totalPages}
+      blockSize={blockSize}
+      onPageChange={movePage} />
   </>)
 }
