@@ -46,7 +46,7 @@ export default function StudyDetailPage() {
   // URL 파라미터에서 스터디 ID 가져오기
   const { id: studyId } = useParams() as { id: string };
 
-  // 상태 관리
+  // API 응답 데이터 상태 관리
   const [isParticipant, setIsParticipant] = useState(false);
   const [studyDetail, setStudyDetail] = useState<StudyDetail>();
   const [participantNum, setParticipantNum] = useState(0);
