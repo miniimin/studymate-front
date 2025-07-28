@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import styles from './Navbar.module.css';
 import { useUser } from '@/context/UserContext';

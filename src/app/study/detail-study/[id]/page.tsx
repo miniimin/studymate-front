@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { getStudyFeed } from '@/api/page';
 import { joinStudy, submitRecord, getRecordPage, getComments } from '@/api/study';
 import { useUser } from '@/context/UserContext';
-import RecordDetail from '@/components/RecordDetail';
+import RecordDetail from '@/components/studyfeed/RecordDetail';
 import PaginationComponent from "@/components/pagination/Pagination";
 import styles from './page.module.css';
 
@@ -65,8 +65,8 @@ export default function StudyDetailPage() {
   // 열려있는 기록 ID 관리
   const [openRecordId, setOpenRecordId] = useState<number | null>(null);
 
-  // 데이터 fetch
-  // 1. 관련된 전체 데이터 가져오기
+  // 데이터 불러오기 관련
+  // 1. 스터디 정보 + 모든 기록 목록 초기 로딩
   const fetchStudy = async () => {
     if (!studyId) return;
     try {
@@ -85,7 +85,7 @@ export default function StudyDetailPage() {
     fetchStudy();
   }, [studyId]);
 
-  // 2. 특정 페이지 기록 목록만 다시 불러오기 (페이지네이션용)
+  // 2. 특정 페이지 기록 목록만 가져오기 (페이지네이션용)
   const fetchRecordPage = async (currentPage: number) => {
     try {
       const res = await getRecordPage(studyId, currentPage);
@@ -95,13 +95,12 @@ export default function StudyDetailPage() {
       console.log(err);
     }
   }
-
   useEffect(() => {
     fetchRecordPage(currentPage);
     setOpenRecordId(null);
   }, [currentPage])
 
-  // 3. 특정 기록 제목, 내용 업데이트(기록 수정 후 실행)
+  // 3. 수정된 기록 반영 (제목/내용 수정 후 업데이트)
   const fetchRecord = async (updatedRecord: any) => {
     try {
       setRecordList((prev) =>
@@ -118,7 +117,7 @@ export default function StudyDetailPage() {
     }
   }
 
-  // 4. 특정 기록에 달린 덧글 전체 업데이트(덧글 새로 작성 후 실행)
+  // 4. 특정 기록의 댓글만 갱신 (댓글 작성/수정 후)
   const fetchCommentsForRecord = async (recordId: number) => {
     try {
       const res = await getComments(recordId);
@@ -153,14 +152,14 @@ export default function StudyDetailPage() {
     }
   }
 
-  // 2. 기록 작성 폼 입력값 변경 시 상태 업데이트
+  // 2. 기록 작성 입력 값 변경 핸들러
   const handleRecordChange = (e: any) => {
     const { name, value } = e.target;
     setNewRecord(prev => ({ ...prev, [name]: value }));
   };
 
 
-  // 3. 기록 제출
+  // 3. 기록 제출 요청
   const toggleRecordSubmitForm = () => setShowForm(prev => !prev);
   const handleRecordSubmit = async (e: any) => {
     try {
@@ -171,7 +170,7 @@ export default function StudyDetailPage() {
     }
   }
 
-  // 4. 기록 내용 토글
+  // 4. 특정 기록 펼치기/접기 (상세 보기)
   const toggleRecordDetail = (id: number) => {
     setOpenRecordId(prev => (prev === id ? null : id));
   };
@@ -229,7 +228,7 @@ export default function StudyDetailPage() {
             <li>날짜</li>
           </ul>
           {recordList?.map((r) => (
-            <React.Fragment key={r.id}>
+            <div key={r.id}>
               <ul onClick={() => toggleRecordDetail(r.id)}
                 className={isParticipant
                   ? styles.recordRowParticipant
@@ -248,7 +247,7 @@ export default function StudyDetailPage() {
                   onCommentSubmit={fetchCommentsForRecord}
                   onRecordModify={fetchRecord} />
                   /* 갱신 함수를 하위 컴포넌트로 전달 */}
-            </React.Fragment>
+            </div>
           ))}
           <PaginationComponent
             currentPage={currentPage}

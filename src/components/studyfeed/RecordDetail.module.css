@@ -69,14 +69,14 @@
   flex-direction: column;
   border-top: 1px solid #ddd;
   padding: 1rem 0;
-  gap:5px;
+  gap: 5px;
 }
 
-.commentBody li:nth-child(1) {
+.commentBody span:nth-child(1) {
   font-weight: bold;
 }
 
-.commentBody li:nth-child(3) {
+.commentBody span:nth-child(3) {
   margin-top: 2px;
   font-size: 0.8rem;
   color: #686868;
