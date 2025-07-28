@@ -25,7 +25,7 @@ export default function StudySearchPage() {
 
   const queryParam = searchParams.get('query') || '';
   const pageParam = parseInt(searchParams.get('page') || '1');
-  const limit = 3;
+  const blockSize = 3;
 
   // api에서 받아오는 값
   const [studies, setStudies] = useState<Study[]>([]);
@@ -35,8 +35,8 @@ export default function StudySearchPage() {
   const [inputQuery, setInputQuery] = useState(queryParam);
 
   // 현재 페이지 기준으로 블록 시작번호 계산
-  const currentBlock = Math.floor((pageParam - 1) / limit);
-  const startPage = currentBlock * limit + 1;
+  const currentBlock = Math.floor((pageParam - 1) / blockSize);
+  const startPage = currentBlock * blockSize + 1;
 
   // 쿼리스트링 변경될 때 fetchStudy 호출하여 API에서 스터디 목록 받아오기
   const fetchStudy = async () => {
@@ -98,10 +98,10 @@ export default function StudySearchPage() {
 
     <div className={styles.pagination}>
       {(currentBlock > 0) && (
-        <button onClick={() => movePage((currentBlock - 1) * limit + 1)} className={styles.blockButton}>
+        <button onClick={() => movePage((currentBlock - 1) * blockSize + 1)} className={styles.blockButton}>
           이전
         </button>)}
-      {Array.from({ length: limit }, (_, index) => {
+      {Array.from({ length: blockSize }, (_, index) => {
         const pageNumber = startPage + index;
         if (pageNumber > totalPages) return null;
         return (
@@ -114,8 +114,8 @@ export default function StudySearchPage() {
           </button>
         );
       })}
-      {(currentBlock + 1) * limit < totalPages && (
-        <button onClick={() => movePage((currentBlock + 1) * limit + 1)} className={styles.blockButton}>
+      {(currentBlock + 1) * blockSize < totalPages && (
+        <button onClick={() => movePage((currentBlock + 1) * blockSize + 1)} className={styles.blockButton}>
           다음
         </button>
       )}

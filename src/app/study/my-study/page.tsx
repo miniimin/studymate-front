@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 import StudyStatus from "@/components/study-card/StudyStatus";
 import Link from "next/link";
 import { getOngoingStudy, getCompletedStudy } from "@/api/page";
-import { useUser } from "@/context/UserContext";
+import PaginationComponent from "@/components/pagination/Pagination";
 
 interface MyStudyList {
   id: number;
@@ -34,31 +34,12 @@ export default function MyStudyPage() {
 
   const [ongoingPage, setOngoingPage] = useState(1);
   const [completedPage, setCompletedPage] = useState(1);
+  const blockSize = 5;
 
-  // 페이지 블럭 세팅값
-  const pageLimit = 3;
-  const ongoingPageBlock = Math.floor((ongoingPage - 1) / pageLimit);
-  const ongoingStartPage = ongoingPageBlock * pageLimit + 1;
-  const completedPageBlock = Math.floor((completedPage - 1) / pageLimit);
-  const completedStartPage = completedPageBlock * pageLimit + 1;
-
-  // const fetch = async () => {
-  //   try {
-  //     const res = await getMyStudy();
-  //     setOngoingStudyList(res.data.ongoingStudyList);
-  //     setCompletedStudyList(res.data.completedStudyList);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   fetch();
-  // }, []);
-
-  const fetchOngoingStudies = async (pageNum: number) => {
+  // 진행 중 스터디 불러오기
+  const fetchOngoingStudies = async () => {
     try {
-      const res = await getOngoingStudy(pageNum);
+      const res = await getOngoingStudy(ongoingPage);
       setOngoingStudyList(res.data);
     } catch (err) {
       console.error(err);
@@ -66,13 +47,13 @@ export default function MyStudyPage() {
   };
 
   useEffect(() => {
-    fetchOngoingStudies(ongoingPage);
+    fetchOngoingStudies();
   }, [ongoingPage]);
 
-
-  const fetcCompletedStudies = async (pageNum: number) => {
+  // 완료된 스터디 불러오기
+  const fetcCompletedStudies = async () => {
     try {
-      const res = await getCompletedStudy(pageNum);
+      const res = await getCompletedStudy(completedPage);
       setCompletedStudyList(res.data);
     } catch (err) {
       console.error(err);
@@ -80,8 +61,12 @@ export default function MyStudyPage() {
   };
 
   useEffect(() => {
-    fetcCompletedStudies(completedPage);
+    fetcCompletedStudies();
   }, [completedPage]);
+
+  // 페이지 핸들러
+  const handleOngoingPageChange = (page: number) => setOngoingPage(page);
+  const handleCompletedPageChange = (page: number) => setCompletedPage(page);
 
   return (
     <>
@@ -111,35 +96,12 @@ export default function MyStudyPage() {
           )))}
       </div>
       {ongoingStudyList && (
-        <div className={styles.pagination}>
-          {ongoingPageBlock > 0 && (
-            <button className={styles.blockButton} onClick={() => {
-              setOngoingPage((ongoingPageBlock - 1) * pageLimit + 1);
-            }}>
-              이전
-            </button>
-          )}
-          {Array.from({ length: pageLimit }, (_, index) => {
-            if (ongoingStartPage + index > ongoingStudyList.totalPages) return null;
-            return (
-              <button
-                key={index}
-                onClick={() => setOngoingPage(ongoingStartPage + index)}
-                disabled={ongoingPage === ongoingStartPage + index}
-                className={ongoingPage === ongoingStartPage + index ? styles.currentPageButton : styles.pageButton}
-              >
-                {ongoingStartPage + index}
-              </button>
-            );
-          })}
-          {(ongoingPageBlock + 1) * pageLimit < ongoingStudyList.totalPages && (
-            <button className={styles.blockButton} onClick={() => {
-              setOngoingPage((ongoingPageBlock + 1) * pageLimit + 1);
-            }}>
-              다음
-            </button>
-          )}
-        </div>
+        <PaginationComponent
+          currentPage={ongoingPage}
+          totalPages={ongoingStudyList.totalPages}
+          blockSize={blockSize}
+          onPageChange={handleOngoingPageChange}
+        />
       )}
       <div className={styles.subtitle}>나의 완료 스터디</div>
       <div className={globalStyles.wrapperStyles}>
@@ -158,35 +120,12 @@ export default function MyStudyPage() {
             participantsMax={study.participantsMax} />)))}
       </div>
       {completedStudyList && (
-        <div className={styles.pagination}>
-          {completedPageBlock > 0 && (
-            <button className={styles.blockButton} onClick={() => {
-              setCompletedPage((completedPageBlock - 1) * pageLimit + 1);
-            }}>
-              이전
-            </button>
-          )}
-          {Array.from({ length: pageLimit }, (_, index) => {
-            if (completedStartPage + index > completedStudyList.totalPages) return null;
-            return (
-              <button
-                key={index}
-                onClick={() => setCompletedPage(completedStartPage + index)}
-                disabled={completedPage === completedStartPage + index}
-                className={completedPage === completedStartPage + index ? styles.currentPageButton : styles.pageButton}
-              >
-                {completedStartPage + index}
-              </button>
-            );
-          })}
-          {(completedPageBlock + 1) * pageLimit < completedStudyList.totalPages && (
-            <button className={styles.blockButton} onClick={() => {
-              setCompletedPage((completedPageBlock + 1) * pageLimit + 1);
-            }}>
-              다음
-            </button>
-          )}
-        </div>
+        <PaginationComponent
+          currentPage={completedPage}
+          totalPages={completedStudyList.totalPages}
+          blockSize={blockSize}
+          onPageChange={handleCompletedPageChange}
+        />
       )}
     </>)
 }

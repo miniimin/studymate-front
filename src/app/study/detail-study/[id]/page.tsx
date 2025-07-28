@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import styles from './page.module.css';
-import RecordDetail from '@/components/RecordDetail';
 import { useParams } from 'next/navigation';
 import { getStudyFeed } from '@/api/page';
 import { joinStudy, submitRecord, getRecordPage, getComments } from '@/api/study';
 import { useUser } from '@/context/UserContext';
+import RecordDetail from '@/components/RecordDetail';
+import PaginationComponent from "@/components/pagination/Pagination";
+import styles from './page.module.css';
 
 interface StudyDetail {
   id: number;
@@ -40,24 +41,32 @@ interface Participants {
 }
 
 export default function StudyDetailPage() {
+  // 사용자 정보, 로그인 상태
   const { isLoggedIn, user } = useUser();
+  // URL 파라미터에서 스터디 ID 가져오기
   const { id: studyId } = useParams() as { id: string };
 
+  // 상태 관리
   const [isParticipant, setIsParticipant] = useState(false);
   const [studyDetail, setStudyDetail] = useState<StudyDetail>();
   const [participantNum, setParticipantNum] = useState(0);
   const [recordList, setRecordList] = useState<RecordList[]>();
   const [participants, setParticipants] = useState<Participants[]>();
 
-  // 페이징
+  // 페이지네이션 관련 상태
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const blockSize = 5;
-  const pageBlock = Math.floor((currentPage - 1) / blockSize);
 
+  // 기록 작성 폼 관련 상태
   const [showForm, setShowForm] = useState(false);
   const [newRecord, setNewRecord] = useState({ title: '', content: '' });
 
+  // 열려있는 기록 ID 관리
+  const [openRecordId, setOpenRecordId] = useState<number | null>(null);
+
+  // 데이터 fetch
+  // 1. 관련된 전체 데이터 가져오기
   const fetchStudy = async () => {
     if (!studyId) return;
     try {
@@ -72,33 +81,11 @@ export default function StudyDetailPage() {
       console.error(err);
     }
   };
-
   useEffect(() => {
     fetchStudy();
   }, [studyId]);
 
-  const isEnded = studyDetail && new Date() > new Date(studyDetail.endDate);
-
-  const handleJoinStudy = async (e: any) => {
-    if (!isLoggedIn) return alert('로그인이 필요합니다.');
-
-    if (window.confirm('스터디에 참여하겠습니까?')) {
-      try {
-        const res = await joinStudy(studyId);
-        alert('스터디 가입 완료');
-        location.reload();
-      } catch (err) {
-        alert('가입 실패했습니다.');
-      }
-    }
-  }
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewRecord(prev => ({ ...prev, [name]: value }));
-  };
-
-  // 한 페이지 전체 패치
+  // 2. 특정 페이지 기록 목록만 다시 불러오기 (페이지네이션용)
   const fetchRecordPage = async (currentPage: number) => {
     try {
       const res = await getRecordPage(studyId, currentPage);
@@ -114,14 +101,14 @@ export default function StudyDetailPage() {
     setOpenRecordId(null);
   }, [currentPage])
 
-  // 기록 수정시 제목이랑 내용 업데이트
+  // 3. 특정 기록 제목, 내용 업데이트(기록 수정 후 실행)
   const fetchRecord = async (updatedRecord: any) => {
     try {
       setRecordList((prev) =>
         prev?.map((r) =>
           r.id === updatedRecord.id ? {
             ...r,
-            title:updatedRecord.title,
+            title: updatedRecord.title,
             content: updatedRecord.content,
           } : r
         )
@@ -131,7 +118,7 @@ export default function StudyDetailPage() {
     }
   }
 
-  // 덧글 전체 패치
+  // 4. 특정 기록에 달린 덧글 전체 업데이트(덧글 새로 작성 후 실행)
   const fetchCommentsForRecord = async (recordId: number) => {
     try {
       const res = await getComments(recordId);
@@ -145,7 +132,35 @@ export default function StudyDetailPage() {
     }
   };
 
-  // 기록 제출 관련 
+
+  // 스터디 종료 여부 체크
+  const isEnded = studyDetail && new Date() > new Date(studyDetail.endDate);
+
+
+  // 이벤트 핸들러
+  // 1. 스터디 참여 요청
+  const handleJoinStudy = async (e: any) => {
+    if (!isLoggedIn) return alert('로그인이 필요합니다.');
+
+    if (window.confirm('스터디에 참여하겠습니까?')) {
+      try {
+        const res = await joinStudy(studyId);
+        alert('스터디 가입 완료');
+        location.reload();
+      } catch (err) {
+        alert('가입 실패했습니다.');
+      }
+    }
+  }
+
+  // 2. 기록 작성 폼 입력값 변경 시 상태 업데이트
+  const handleRecordChange = (e: any) => {
+    const { name, value } = e.target;
+    setNewRecord(prev => ({ ...prev, [name]: value }));
+  };
+
+
+  // 3. 기록 제출
   const toggleRecordSubmitForm = () => setShowForm(prev => !prev);
   const handleRecordSubmit = async (e: any) => {
     try {
@@ -156,11 +171,11 @@ export default function StudyDetailPage() {
     }
   }
 
-  // 기록 내용 보기
-  const [openRecordId, setOpenRecordId] = useState<number | null>(null);
+  // 4. 기록 내용 토글
   const toggleRecordDetail = (id: number) => {
     setOpenRecordId(prev => (prev === id ? null : id));
   };
+
 
   return (
     <>
@@ -186,12 +201,12 @@ export default function StudyDetailPage() {
                   <form className={styles.recordForm}>
                     <div className={styles.fieldGroup}>
                       <label htmlFor="title" className={styles.label}>제목</label>
-                      <input id="title" name="title" className={styles.input} onChange={handleChange} />
+                      <input id="title" name="title" className={styles.input} onChange={handleRecordChange} />
                     </div>
 
                     <div className={styles.fieldGroup}>
                       <label htmlFor="content" className={styles.label}>내용</label>
-                      <textarea id="content" name="content" className={styles.textarea} onChange={handleChange} />
+                      <textarea id="content" name="content" className={styles.textarea} onChange={handleRecordChange} />
                     </div>
 
                     <div className={styles.buttonWrapper}>
@@ -235,32 +250,12 @@ export default function StudyDetailPage() {
                   /* 갱신 함수를 하위 컴포넌트로 전달 */}
             </React.Fragment>
           ))}
-          <div className={styles.pagination}>
-            <div>{pageBlock > 0 &&
-              <button onClick={() => setCurrentPage((pageBlock - 1) * blockSize + 1)}
-                className={styles.blockButton}>
-                이전
-              </button>
-            }
-              {Array.from({ length: blockSize }, (_, index) => {
-                const firstPage = pageBlock * blockSize + 1;
-                const pageNumber = firstPage + index;
-                if (pageNumber > totalPages) return null;
-                return (
-                  <button key={index}
-                    className={currentPage === pageNumber ? styles.currentPageButton : styles.pageButton}
-                    onClick={() => setCurrentPage(pageNumber)}>
-                    {pageNumber}
-                  </button>)
-              })}
-              {(pageBlock + 1) * blockSize < totalPages &&
-                <button onClick={() => setCurrentPage((pageBlock + 1) * blockSize + 1)}
-                  className={styles.blockButton}>
-                  다음
-                </button>
-              }
-            </div>
-          </div>
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            blockSize={blockSize}
+            onPageChange={setCurrentPage}
+          />
         </div>
       </section>
     </>
