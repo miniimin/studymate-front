@@ -36,18 +36,17 @@ export default function StudySearchPage() {
   const [inputQuery, setInputQuery] = useState(queryParam);
 
   // 쿼리스트링 변경될 때 fetchStudy 호출하여 API에서 스터디 목록 받아오기
-  const fetchStudy = async () => {
-    try {
-      const response = await getSearchStudy(pageParam, queryParam);
-      const data: Study[] = response.data.searchStudyPageData.studies;
-      setStudies(data);
-      setTotalPages(parseInt(response.data.searchStudyPageData.totalPages));
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   useEffect(() => {
+    const fetchStudy = async () => {
+      try {
+        const response = await getSearchStudy(pageParam, queryParam);
+        const data: Study[] = response.data.searchStudyPageData.studies;
+        setStudies(data);
+        setTotalPages(parseInt(response.data.searchStudyPageData.totalPages));
+      } catch (err) {
+        console.error(err);
+      }
+    }
     fetchStudy();
   }, [pageParam, queryParam]);
 
@@ -78,7 +77,7 @@ export default function StudySearchPage() {
       </form>
     </div>
     <div className={globalStyles.wrapperStyles}>
-      {studies.map((study, index) => (
+      {studies.map((study) => (
         <StudySearch
           key={study.id}
           id={study.id}

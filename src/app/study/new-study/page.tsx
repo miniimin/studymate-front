@@ -60,7 +60,6 @@ export default function NewStudyPage() {
     } else {
       setDeadlineOptionDisabled(false);
     }
-    console.log(form.alwaysRecruit);
   }, [form.participantsMax]);
 
   return (

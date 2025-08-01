@@ -27,8 +27,8 @@ export default function JoinPage() {
       await postUser(form);
       alert('회원가입이 완료되었습니다.');
       router.push('/login');
-    } catch (error) {
-      alert('회원가입에 실패했습니다.=');
+    } catch (e) {
+      alert('회원가입에 실패했습니다.' + e);
     }
   };
 

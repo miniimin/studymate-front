@@ -2,7 +2,18 @@ import React from "react";
 import styles from "./card.module.css";
 import Link from "next/link";
 
-const StudyStatus = ({ id, title, description, startDate, endDate, role, participantsMax }: any) => {
+interface StudyStatusProps {
+  id: number;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  role: string;
+  participantsMax: number;
+}
+
+
+const StudyStatus = ({ id, title, description, startDate, endDate, role, participantsMax }: StudyStatusProps) => {
   const isLeader = role === 'LEADER';
   const splitStartDate = startDate.split('T')[0];
   const splitEndDate = endDate.split('T')[0];

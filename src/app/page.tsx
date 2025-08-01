@@ -15,7 +15,7 @@ interface MyStudyList {
   endDate: string;
   role: string;
   recruitDeadline: string;
-  participantsMax: string;
+  participantsMax: number;
 }
 
 interface SearchStudyList {
@@ -38,8 +38,12 @@ export default function Home() {
   const fetch = async () => {
     try {
       const res = await getMain();
-      res.data.ongoingStudyList?.studies && setOngoingStudyList(res.data.ongoingStudyList.studies);
-      res.data.recruitingStudyList?.studies && setRecruitingStudyList(res.data.recruitingStudyList.studies);
+      if (res.data.ongoingStudyList?.studies) {
+        setOngoingStudyList(res.data.ongoingStudyList.studies);
+      }
+      if (res.data.recruitingStudyList?.studies) {
+        setRecruitingStudyList(res.data.recruitingStudyList.studies);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -64,7 +68,7 @@ export default function Home() {
       </div>
       <div className={styles.subtitleWrapper}>
         <div className={styles.subtitle}>나의 진행 중인 스터디</div>
-        {isLoggedIn &&<Link href={'/study/my-study'}><p>더보기 ＞</p></Link>}
+        {isLoggedIn && <Link href={'/study/my-study'}><p>더보기 ＞</p></Link>}
       </div>
       <div className={styles.wrapperStyles}>
         {!isLoggedIn && (

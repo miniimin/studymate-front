@@ -6,7 +6,6 @@ interface UserContextType {
     user: { nickname: string } | null;
     loading: boolean;
     isLoggedIn: boolean;
-    setIsLoggedIn: (value: boolean) => void;
     setUser: (user: { nickname: string } | null) => void;
 }
 
@@ -14,20 +13,20 @@ const UserContext = createContext<UserContextType>({
     user: null,
     loading: true,
     isLoggedIn: false,
-    setIsLoggedIn: () => {},
-    setUser: () =>{}
+    setUser: () => { }
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<UserContextType["user"]>(null);
     const [loading, setLoading] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         fetchUser()
             .then(res => {
                 if (res.data.isLoggedIn) {
-                    setUser({ nickname: res.data.nickname });
+                    setUser({
+                        nickname: res.data.nickname
+                    });
                 } else {
                     setUser(null);
                 }
@@ -45,7 +44,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                 user,
                 isLoggedIn: !!user,
                 loading,
-                setIsLoggedIn,
                 setUser
             }}
         >

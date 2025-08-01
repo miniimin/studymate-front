@@ -2,7 +2,18 @@ import React from "react";
 import styles from "./card.module.css";
 import Link from "next/link";
 
-const StudySearch = ({ id, title, description, startDate, endDate, participantsNum, maxParticipants, recruitDeadline }: any) => {
+interface StudySearchProps {
+  id: number;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  participantsNum: number;
+  maxParticipants: number;
+  recruitDeadline: string;
+}
+
+const StudySearch = ({ id, title, description, startDate, endDate, participantsNum, maxParticipants, recruitDeadline }: StudySearchProps) => {
   return (
     <Link href={`/study/detail-study/${id}`}>
       <div className={styles.container}>

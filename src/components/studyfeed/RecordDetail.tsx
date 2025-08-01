@@ -10,6 +10,15 @@ interface StudyComment {
   createdAt: string;
 }
 
+interface RecordList {
+  id: number;
+  authorName: string;
+  title: string;
+  createdAt: string;
+  content?: string;
+  comments?: [];
+}
+
 interface RecordDetailProps {
   recordId: number;
   isAuthor: boolean;
@@ -17,7 +26,7 @@ interface RecordDetailProps {
   content: string;
   comments: StudyComment[];
   onCommentSubmit: (recordId: number) => void;
-  onRecordModify: (recordId: any) => void;
+  onRecordModify: (updatedRecord: RecordList) => void;
 }
 
 const formatDate = (dateString: string) => {
@@ -37,7 +46,7 @@ const RecordDetail = ({
   isAuthor,
   title,
   content,
-  comments = [],
+  comments,
   onCommentSubmit,
   onRecordModify
 }: RecordDetailProps) => {
@@ -73,6 +82,7 @@ const RecordDetail = ({
   const handleEditedCommentSubmit = async () => {
     if (!editedCommentContent.trim()) return;
     try {
+      if (editingCommentId == null) return;
       await modifyComment(editingCommentId, editedCommentContent);
       setEditingCommentId(null);
       setEditedCommentContent('');

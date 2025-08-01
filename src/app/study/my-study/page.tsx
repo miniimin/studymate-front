@@ -16,7 +16,7 @@ interface MyStudyList {
   endDate: string;
   role: string;
   recruitDeadline: string;
-  participantsMax: string;
+  participantsMax: number;
 }
 
 interface StudyListPage {
@@ -37,31 +37,29 @@ export default function MyStudyPage() {
   const blockSize = 5;
 
   // 진행 중 스터디 불러오기
-  const fetchOngoingStudies = async () => {
-    try {
-      const res = await getOngoingStudy(ongoingPage);
-      setOngoingStudyList(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
+    const fetchOngoingStudies = async () => {
+      try {
+        const res = await getOngoingStudy(ongoingPage);
+        setOngoingStudyList(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     fetchOngoingStudies();
   }, [ongoingPage]);
 
   // 완료된 스터디 불러오기
-  const fetcCompletedStudies = async () => {
-    try {
-      const res = await getCompletedStudy(completedPage);
-      setCompletedStudyList(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
-    fetcCompletedStudies();
+    const fetchCompletedStudies = async () => {
+      try {
+        const res = await getCompletedStudy(completedPage);
+        setCompletedStudyList(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchCompletedStudies();
   }, [completedPage]);
 
   // 페이지 핸들러

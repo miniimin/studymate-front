@@ -29,13 +29,6 @@ interface RecordList {
   comments?: [];
 }
 
-interface StudyComment {
-  id: number;
-  authorName: string;
-  content: string;
-  createdAt: string;
-}
-
 interface Participants {
   nickname: string;
 }
@@ -67,41 +60,41 @@ export default function StudyDetailPage() {
 
   // 데이터 불러오기 관련
   // 1. 스터디 정보 + 모든 기록 목록 초기 로딩
-  const fetchStudy = async () => {
-    if (!studyId) return;
-    try {
-      const res = await getStudyFeed(studyId);
-      setIsParticipant(res.data.isParticipant);
-      setStudyDetail(res.data.studyDetail);
-      setParticipantNum(res.data.participantNum);
-      setRecordList(res.data.recordList);
-      setTotalPages(res.data.totalPages);
-      setParticipants(res.data.participantsList);
-    } catch (err) {
-      console.error(err);
-    }
-  };
   useEffect(() => {
+    const fetchStudy = async () => {
+      if (!studyId) return;
+      try {
+        const res = await getStudyFeed(studyId);
+        setIsParticipant(res.data.isParticipant);
+        setStudyDetail(res.data.studyDetail);
+        setParticipantNum(res.data.participantNum);
+        setRecordList(res.data.recordList);
+        setTotalPages(res.data.totalPages);
+        setParticipants(res.data.participantsList);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     fetchStudy();
   }, [studyId]);
 
   // 2. 특정 페이지 기록 목록만 가져오기 (페이지네이션용)
-  const fetchRecordPage = async (currentPage: number) => {
-    try {
-      const res = await getRecordPage(studyId, currentPage);
-      setRecordList(res.data?.recordList);
-      setTotalPages(res.data?.totalPages);
-    } catch (err) {
-      console.log(err);
-    }
-  }
   useEffect(() => {
+    const fetchRecordPage = async (currentPage: number) => {
+      try {
+        const res = await getRecordPage(studyId, currentPage);
+        setRecordList(res.data?.recordList);
+        setTotalPages(res.data?.totalPages);
+      } catch (err) {
+        console.log(err);
+      }
+    }
     fetchRecordPage(currentPage);
     setOpenRecordId(null);
-  }, [currentPage])
+  }, [studyId, currentPage])
 
   // 3. 수정된 기록 반영 (제목/내용 수정 후 업데이트)
-  const fetchRecord = async (updatedRecord: any) => {
+  const fetchRecord = async (updatedRecord: RecordList) => {
     try {
       setRecordList((prev) =>
         prev?.map((r) =>
@@ -138,22 +131,22 @@ export default function StudyDetailPage() {
 
   // 이벤트 핸들러
   // 1. 스터디 참여 요청
-  const handleJoinStudy = async (e: any) => {
+  const handleJoinStudy = async () => {
     if (!isLoggedIn) return alert('로그인이 필요합니다.');
-
     if (window.confirm('스터디에 참여하겠습니까?')) {
       try {
-        const res = await joinStudy(studyId);
+        await joinStudy(studyId);
         alert('스터디 가입 완료');
         location.reload();
       } catch (err) {
+        console.log(err);
         alert('가입 실패했습니다.');
       }
     }
   }
 
   // 2. 기록 작성 입력 값 변경 핸들러
-  const handleRecordChange = (e: any) => {
+  const handleRecordChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewRecord(prev => ({ ...prev, [name]: value }));
   };
@@ -161,11 +154,13 @@ export default function StudyDetailPage() {
 
   // 3. 기록 제출 요청
   const toggleRecordSubmitForm = () => setShowForm(prev => !prev);
-  const handleRecordSubmit = async (e: any) => {
+  const handleRecordSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     try {
-      const res = await submitRecord(studyId, newRecord);
+      await submitRecord(studyId, newRecord);
       setCurrentPage(1);
     } catch (err) {
+      console.log(err);
       alert('제출 실패');
     }
   }

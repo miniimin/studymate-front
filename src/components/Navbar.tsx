@@ -12,7 +12,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({
     brand = { label: '키플리', href: '/' },
 }) => {
-    const { user, isLoggedIn, loading, setIsLoggedIn, setUser } = useUser();
+    const { user, isLoggedIn, loading, setUser } = useUser();
     const [isMyMenuOpen, setIsMyMenuOpen] = useState(false);
 
     const handleLogout = async (e: React.FormEvent) => {
@@ -20,7 +20,6 @@ const Navbar: React.FC<NavbarProps> = ({
         try {
             await logout();
             setUser(null);
-            setIsLoggedIn(false);
             alert('로그아웃 성공');
             window.location.href = '/';
         } catch (err) {

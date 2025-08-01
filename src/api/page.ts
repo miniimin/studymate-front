@@ -19,7 +19,7 @@ export const getMyStudy = async () => {
 }
 
 // 나의 스터디 페이지 - 진행중 스터디 페이징
-export const getOngoingStudy = async (pageNum: any) => {
+export const getOngoingStudy = async (pageNum: number) => {
     const response = await axios.get(`${apiUrl}/api/users/me/studies/ongoing`, {
         params: {
             page: pageNum,
@@ -30,7 +30,7 @@ export const getOngoingStudy = async (pageNum: any) => {
 }
 
 // 나의 스터디 페이지 - 완료 스터디 페이징
-export const getCompletedStudy = async (pageNum: any) => {
+export const getCompletedStudy = async (pageNum: number) => {
     const response = await axios.get(`${apiUrl}/api/users/me/studies/completed`, {
         params: {
             page: pageNum,
@@ -43,7 +43,7 @@ export const getCompletedStudy = async (pageNum: any) => {
 
 
 // 스터디 검색 페이지
-export const getSearchStudy = async (currentPage: any, query: any) => {
+export const getSearchStudy = async (currentPage: number, query: string) => {
     const response = await axios.get(`${apiUrl}/api/page/search-study`, {
         params: {
             query: query,
