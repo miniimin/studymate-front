@@ -158,7 +158,7 @@ export default function StudyDetailPage() {
     e.preventDefault();
     try {
       await submitRecord(studyId, newRecord);
-      setCurrentPage(1);
+      window.location.reload();
     } catch (err) {
       console.log(err);
       alert('제출 실패');
