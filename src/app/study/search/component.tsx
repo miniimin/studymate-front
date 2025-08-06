@@ -24,6 +24,7 @@ export default function StudySearchComponent() {
   const searchParams = useSearchParams();
 
   const queryParam = searchParams.get('query') || '';
+  const statusParam = searchParams.get('status') || 'all';
   const pageParam = parseInt(searchParams.get('page') || '1');
   const blockSize = 3;
 
@@ -33,12 +34,13 @@ export default function StudySearchComponent() {
 
   // 사용자가 입력하는 쿼리 값
   const [inputQuery, setInputQuery] = useState(queryParam);
+  const [inputStatus, setInputStatus] = useState(statusParam);
 
   // 쿼리스트링 변경될 때 fetchStudy 호출하여 API에서 스터디 목록 받아오기
   useEffect(() => {
     const fetchStudy = async () => {
       try {
-        const response = await getSearchStudy(pageParam, queryParam);
+        const response = await getSearchStudy(pageParam, queryParam, statusParam);
         const data: Study[] = response.data.searchStudyPageData.studies;
         setStudies(data);
         setTotalPages(parseInt(response.data.searchStudyPageData.totalPages));
@@ -47,32 +49,75 @@ export default function StudySearchComponent() {
       }
     }
     fetchStudy();
-  }, [pageParam, queryParam]);
+  }, [pageParam, queryParam, statusParam]);
 
   // 사용자가 검색 버튼 누르면 URL 변경하여 페이지 1부터 검색
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/study/search?query=${inputQuery}&page=1`);
+    router.push(`/study/search?query=${inputQuery}&status=${inputStatus}&page=1`);
   };
 
   // 현재 검색어 유지한 채 사용자가 페이지번호 URL 변경
   const movePage = (page: number) => {
-    router.push(`/study/search?query=${queryParam}&page=${page}`);
+    router.push(`/study/search?query=${queryParam}&status=${inputStatus}&page=${page}`);
   };
-
 
   return (
     <>
       <div>
-        <form onSubmit={handleSearch} className={styles.searchBar}>
-          <input
-            className={styles.searchInput}
-            type="text"
-            placeholder="검색어를 입력하세요"
-            value={inputQuery}
-            onChange={(e) => setInputQuery(e.target.value)}
-          />
-          <button className={styles.searchButton}>검색</button>
+        <form onSubmit={handleSearch}>
+          <div className={styles.searchStatus}>
+            <label>
+              <input
+                type="radio"
+                name="searchStatus"
+                value="all"
+                onChange={(e) => setInputStatus(e.target.value)}
+                checked={inputStatus === "all"}
+              />
+              전체
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="searchStatus"
+                value="recruiting"
+                onChange={(e) => setInputStatus(e.target.value)}
+                checked={inputStatus === "recruiting"}
+              />
+              모집중
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="searchStatus"
+                value="closed"
+                onChange={(e) => setInputStatus(e.target.value)}
+                checked={inputStatus === "closed"}
+              />
+              모집완료
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="searchStatus"
+                value="completed"
+                onChange={(e) => setInputStatus(e.target.value)}
+                checked={inputStatus === "completed"}
+              />
+              스터디 완료
+            </label>
+          </div>
+          <div className={styles.searchBar}>
+            <input
+              className={styles.searchInput}
+              type="text"
+              placeholder="검색어를 입력하세요"
+              value={inputQuery}
+              onChange={(e) => setInputQuery(e.target.value)}
+            />
+            <button className={styles.searchButton}>검색</button>
+          </div>
         </form>
       </div>
       <div className={globalStyles.wrapperStyles}>

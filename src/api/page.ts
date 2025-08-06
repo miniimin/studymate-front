@@ -43,10 +43,11 @@ export const getCompletedStudy = async (pageNum: number) => {
 
 
 // 스터디 검색 페이지
-export const getSearchStudy = async (currentPage: number, query: string) => {
+export const getSearchStudy = async (currentPage: number, query: string, status: string) => {
     const response = await axios.get(`${apiUrl}/api/page/search-study`, {
         params: {
             query: query,
+            status: status,
             page: currentPage,
             size: 6
         }
