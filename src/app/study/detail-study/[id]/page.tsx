@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { getStudyFeed } from '@/api/page';
 import { joinStudy, submitRecord, getRecordPage, getComments } from '@/api/study';
@@ -60,38 +60,39 @@ export default function StudyDetailPage() {
 
   // 데이터 불러오기 관련
   // 1. 스터디 정보 + 모든 기록 목록 초기 로딩
+  const fetchStudy = useCallback(async () => {
+    if (!studyId) return;
+    try {
+      const res = await getStudyFeed(studyId);
+      setIsParticipant(res.data.isParticipant);
+      setStudyDetail(res.data.studyDetail);
+      setParticipantNum(res.data.participantNum);
+      setRecordList(res.data.recordList);
+      setTotalPages(res.data.totalPages);
+      setParticipants(res.data.participantsList);
+    } catch (err) {
+      console.error(err);
+    }
+  },[studyId]);
   useEffect(() => {
-    const fetchStudy = async () => {
-      if (!studyId) return;
-      try {
-        const res = await getStudyFeed(studyId);
-        setIsParticipant(res.data.isParticipant);
-        setStudyDetail(res.data.studyDetail);
-        setParticipantNum(res.data.participantNum);
-        setRecordList(res.data.recordList);
-        setTotalPages(res.data.totalPages);
-        setParticipants(res.data.participantsList);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchStudy();
-  }, [studyId]);
+  }, [fetchStudy]);
 
   // 2. 특정 페이지 기록 목록만 가져오기 (페이지네이션용)
-  useEffect(() => {
-    const fetchRecordPage = async (currentPage: number) => {
-      try {
-        const res = await getRecordPage(studyId, currentPage);
-        setRecordList(res.data?.recordList);
-        setTotalPages(res.data?.totalPages);
-      } catch (err) {
-        console.log(err);
-      }
+  const fetchRecordPage = useCallback(async (page: number) => {
+    try {
+      const res = await getRecordPage(studyId, page);
+      setRecordList(res.data?.recordList);
+      setTotalPages(res.data?.totalPages);
+    } catch (err) {
+      console.log(err);
     }
+  }, [studyId]);
+
+  useEffect(() => {
     fetchRecordPage(currentPage);
     setOpenRecordId(null);
-  }, [studyId, currentPage])
+  }, [fetchRecordPage, currentPage]);
 
   // 3. 수정된 기록 반영 (제목/내용 수정 후 업데이트)
   const fetchRecord = async (updatedRecord: RecordList) => {
@@ -157,8 +158,11 @@ export default function StudyDetailPage() {
   const handleRecordSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await submitRecord(studyId, newRecord);
-      window.location.reload();
+      const res = await submitRecord(studyId, newRecord);
+      await fetchRecordPage(currentPage);
+      setOpenRecordId(res.data.id);
+      setNewRecord({ title: '', content: '' });
+      setShowForm(false);
     } catch (err) {
       console.log(err);
       alert('제출 실패');
