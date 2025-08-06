@@ -5,6 +5,7 @@ import globalStyels from '@/app/page.module.css';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { postUser } from '@/api/user';
+import { AxiosError } from 'axios';
 
 export default function JoinPage() {
   const router = useRouter();
@@ -28,7 +29,9 @@ export default function JoinPage() {
       alert('회원가입이 완료되었습니다.');
       router.push('/login');
     } catch (e) {
-      alert('회원가입에 실패했습니다.' + e);
+      if (e instanceof AxiosError) {
+        alert(e.response?.data);
+      }
     }
   };
 
