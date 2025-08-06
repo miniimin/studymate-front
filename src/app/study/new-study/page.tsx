@@ -37,7 +37,7 @@ export default function NewStudyPage() {
       endDate: `${form.endDate}T23:59:59`,
       recruitDeadline:
         form.alwaysRecruit === 'beforeStart'
-          ? `${form.startDate}T00:00:00`
+          ? `${form.startDate}T23:59:59`
           : `${form.endDate}T23:59:59`
     };
 
@@ -133,7 +133,7 @@ export default function NewStudyPage() {
         </div>
         <div className={styles.formGroup}>
           <span className={styles.label}>모집 마감 설정</span>
-          <span className={styles.helpText}>모집 마감이 있으면 스터디 시작 전까지만 다른 이용자가 참여할 수 있어요. <br />
+          <span className={styles.helpText}>모집 마감이 있으면 스터디 시작일까지만 다른 이용자가 참여할 수 있어요. <br />
             모집 마감이 없으면 스터디 기간 동안 언제든지 참여 가능합니다.</span>
           <div className={styles.radioGroup}>
             <label className={styles.radioLabel}>
@@ -156,7 +156,7 @@ export default function NewStudyPage() {
                 onChange={handleChange}
                 disabled={deadlineOptionDisabled}
               />
-              모집 마감 있음 (스터디 시작일 전까지 참여 가능)
+              모집 마감 있음 (스터디 시작일까지 참여 가능)
             </label>
           </div>
         </div>
