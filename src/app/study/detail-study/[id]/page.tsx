@@ -73,7 +73,7 @@ export default function StudyDetailPage() {
     } catch (err) {
       console.error(err);
     }
-  },[studyId]);
+  }, [studyId]);
   useEffect(() => {
     fetchStudy();
   }, [fetchStudy]);
@@ -188,11 +188,11 @@ export default function StudyDetailPage() {
         </ul>
       </section>
       <section className={styles.buttonSection}>
-        {isParticipant ? (
+        {isEnded ? (
+          <div className={styles.finished}>스터디 완료</div>
+        ) : (
           <>
-            {isEnded ? (
-              <div className={styles.finished}>스터디 완료</div>
-            ) : (
+            {isParticipant ? (
               <>
                 <button className={styles.recordToggleButton} onClick={toggleRecordSubmitForm}>기록 남기기</button>
                 {showForm && (
@@ -212,10 +212,10 @@ export default function StudyDetailPage() {
                     </div>
                   </form>)}
               </>
+            ) : (
+              <button className={styles.joinButton} onClick={handleJoinStudy}>참여하기</button>
             )}
           </>
-        ) : (
-          <button className={styles.joinButton} onClick={handleJoinStudy}>참여하기</button>
         )}
       </section>
       <section>
