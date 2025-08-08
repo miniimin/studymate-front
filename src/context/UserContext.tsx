@@ -21,21 +21,22 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchUser()
-            .then(res => {
+        const init = async () => {
+            try {
+                const res = await fetchUser();
                 if (res.data.isLoggedIn) {
-                    setUser({
-                        nickname: res.data.nickname
-                    });
+                    setUser({ nickname: res.data.nickname });
                 } else {
                     setUser(null);
                 }
-            })
-            .catch((err) => {
-                console.log(err);
+            } catch (err) {
+                console.error(err);
                 setUser(null);
-            })
-            .finally(() => setLoading(false))
+            } finally {
+                setLoading(false);
+            }
+        };
+        init();
     }, []);
 
     return (
