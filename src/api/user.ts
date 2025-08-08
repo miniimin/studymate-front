@@ -3,6 +3,7 @@ import { getXsrfToken } from "@/components/XsrfToken";
 
 const apiUrl = process.env.NEXT_PUBLIC_LOCAL_API_URL;
 axios.defaults.withCredentials = true;
+axios.defaults.xsrfHeaderName = '';
 
 
 // auth
