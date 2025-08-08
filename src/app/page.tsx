@@ -71,10 +71,9 @@ export default function Home() {
         {isLoggedIn && <Link href={'/study/my-study'}><p>더보기 ＞</p></Link>}
       </div>
       <div className={styles.wrapperStyles}>
-        {!isLoggedIn && (
+        {!isLoggedIn ? (
           <p>로그인을 하고 스터디에 참여하세요!</p>
-        )}
-        {(isLoggedIn && ongoingStudyList.length === 0) ? (
+        ) : ongoingStudyList.length === 0 ? (
           <p>진행 중인 스터디가 없습니다.</p>
         ) : (ongoingStudyList?.map((study) => (
           <StudyStatus
