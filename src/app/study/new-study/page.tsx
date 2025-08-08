@@ -40,8 +40,6 @@ export default function NewStudyPage() {
           ? `${form.startDate}T23:59:59`
           : `${form.endDate}T23:59:59`
     };
-
-    console.log(form);
     try {
       const res = await createStudy(payload); 
       alert('스터디가 만들어졌습니다.');
