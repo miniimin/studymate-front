@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getXsrfToken } from "@/components/XsrfToken";
 
 const apiUrl = process.env.NEXT_PUBLIC_LOCAL_API_URL;
 axios.defaults.withCredentials = true;
@@ -27,17 +28,18 @@ export const login = async (loginData: {
     email: string;
     password: string;
 }) => {
-    const formData = new FormData();
-    formData.append('username', loginData.email);
-    formData.append('password', loginData.password);
-    console.log('로그인요청');
+    const xsrfToken = await getXsrfToken();
+    const params = new URLSearchParams();
+    params.append('username', loginData.email);
+    params.append('password', loginData.password);
     const response = await axios.post(`${apiUrl}/api/auth/login`,
-
-        formData,
+        params,
         {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-            }
+                'X-XSRF-TOKEN': xsrfToken
+            },
+            withCredentials: true,
         }
     );
     return response;
@@ -45,11 +47,13 @@ export const login = async (loginData: {
 
 // 스프링 시큐리티 폼 로그아웃
 export const logout = async () => {
+    const xsrfToken = await getXsrfToken();
     const response = await axios.post(`${apiUrl}/api/auth/logout`,
         new FormData(),
         {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'X-XSRF-TOKEN': xsrfToken
             },
         });
     return response;

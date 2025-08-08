@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getXsrfToken } from "@/components/XsrfToken";
 
 const apiUrl = process.env.NEXT_PUBLIC_LOCAL_API_URL;
 axios.defaults.withCredentials = true;
@@ -20,14 +21,24 @@ interface RecordData {
 
 // 스터디 생성
 export const createStudy = async (studyData: StudyData) => {
-    const response = await axios.post(`${apiUrl}/api/studies`, studyData
+    const xsrfToken = await getXsrfToken();
+    const response = await axios.post(`${apiUrl}/api/studies`, studyData, {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken
+        }
+    }
     );
     return response;
 }
 
 // 스터디참가
 export const joinStudy = async (studyId: string) => {
-    const response = await axios.post(`${apiUrl}/api/studies/${studyId}/participants`);
+    const xsrfToken = await getXsrfToken();
+    const response = await axios.post(`${apiUrl}/api/studies/${studyId}/participants`, '', {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken
+        }
+    });
     return response;
 }
 
@@ -35,13 +46,23 @@ export const joinStudy = async (studyId: string) => {
 
 // 기록 남기기
 export const submitRecord = async (studyId: string, newRecord: RecordData) => {
-    const response = await axios.post(`${apiUrl}/api/studies/${studyId}/records`, newRecord);
+    const xsrfToken = await getXsrfToken();
+    const response = await axios.post(`${apiUrl}/api/studies/${studyId}/records`, newRecord, {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken
+        }
+    });
     return response;
 }
 
 // 기록 수정하기
 export const modifyRecord = async (recordId: number, modifiedRecord: RecordData) => {
-    const response = await axios.put(`${apiUrl}/api/records/${recordId}`, modifiedRecord);
+    const xsrfToken = await getXsrfToken();
+    const response = await axios.put(`${apiUrl}/api/records/${recordId}`, modifiedRecord, {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken
+        }
+    });
     return response;
 }
 
@@ -49,13 +70,23 @@ export const modifyRecord = async (recordId: number, modifiedRecord: RecordData)
 
 // 덧글 남기기
 export const submitComment = async (recordId: number, comment: string) => {
-    const response = await axios.post(`${apiUrl}/api/records/${recordId}/comments`, { content: comment });
+    const xsrfToken = await getXsrfToken();
+    const response = await axios.post(`${apiUrl}/api/records/${recordId}/comments`, { content: comment }, {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken
+        }
+    });
     return response;
 }
 
 // 덧글 수정하기
 export const modifyComment = async (commentId: number, comment: string) => {
-    const response = await axios.put(`${apiUrl}/api/comments/${commentId}`, { content: comment });
+    const xsrfToken = await getXsrfToken();
+    const response = await axios.put(`${apiUrl}/api/comments/${commentId}`, { content: comment }, {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken
+        }
+    });
     return response;
 }
 
