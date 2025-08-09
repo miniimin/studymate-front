@@ -36,12 +36,14 @@ export default function NewStudyPage() {
       startDate: `${form.startDate}T00:00:00`,
       endDate: `${form.endDate}T23:59:59`,
       recruitDeadline:
-        form.alwaysRecruit === 'beforeStart'
+        form.participantsMax === '1'
           ? `${form.startDate}T23:59:59`
-          : `${form.endDate}T23:59:59`
+          : form.alwaysRecruit === 'beforeStart'
+            ? `${form.startDate}T23:59:59`
+            : `${form.endDate}T23:59:59`
     };
     try {
-      const res = await createStudy(payload); 
+      const res = await createStudy(payload);
       alert('스터디가 만들어졌습니다.');
       router.push(`/study/detail-study/${res.data.id}`);
     } catch (err) {
