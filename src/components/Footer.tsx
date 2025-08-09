@@ -4,6 +4,9 @@ const Footer: React.FC = () => {
     return (
         <footer
             style={{
+                position: 'fixed',
+                left: 0,
+                bottom: 0,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -12,7 +15,6 @@ const Footer: React.FC = () => {
                 height: '4rem',
                 width: '100%',
                 zIndex: 1000,
-                bottom: 0,
             }}
         >
             <p>© 2025 키플리. All rights reserved.</p>
