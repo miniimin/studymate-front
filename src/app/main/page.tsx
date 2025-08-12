@@ -6,7 +6,6 @@ import { getMain } from "@/api/page";
 import { useEffect, useState } from "react";
 import { useUser } from '@/context/UserContext';
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 interface MyStudyList {
   id: number;
@@ -32,9 +31,6 @@ interface SearchStudyList {
 
 export default function Home() {
   const { isLoggedIn } = useUser();
-  if (!isLoggedIn) {
-    redirect('/login');
-  }
 
   const [ongoingStudyList, setOngoingStudyList] = useState<MyStudyList[]>([]);
   const [recruitingStudyList, setRecruitingStudyList] = useState<SearchStudyList[]>([]);
