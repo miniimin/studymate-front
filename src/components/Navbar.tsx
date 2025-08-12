@@ -54,7 +54,8 @@ const Navbar: React.FC<NavbarProps> = ({
                                 <li className={styles.navItemDropDown}
                                     onMouseEnter={() => setIsMyMenuOpen(true)}
                                     onMouseLeave={() => setIsMyMenuOpen(false)}>
-                                    <p>{user?.nickname}님 접속중</p>
+                                    <p>{user?.nickname}님</p>
+                                    <p>접속중</p>
 
                                     {isMyMenuOpen && (
                                         <ul className={styles.dropDownMenu} onClick={handleLogout}>
