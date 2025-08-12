@@ -1,6 +1,7 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react';
 import { fetchUser } from '@/api/user';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface UserContextType {
     user: { nickname: string } | null;
@@ -19,6 +20,8 @@ const UserContext = createContext<UserContextType>({
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<UserContextType["user"]>(null);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
         const init = async () => {
@@ -28,10 +31,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     setUser({ nickname: res.data.nickname });
                 } else {
                     setUser(null);
+                    if (pathname !== '/login' && pathname !== '/join') {
+                        router.push('/login');
+                    }
                 }
             } catch (err) {
                 console.error(err);
                 setUser(null);
+                if (pathname !== '/login' && pathname !== '/join') {
+                    router.push('/login');
+                }
             } finally {
                 setLoading(false);
             }

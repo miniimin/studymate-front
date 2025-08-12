@@ -41,9 +41,9 @@ export default function StudySearchComponent() {
     const fetchStudy = async () => {
       try {
         const response = await getSearchStudy(pageParam, queryParam, statusParam);
-        const data: Study[] = response.data.searchStudyPageData.studies;
+        const data: Study[] = response.data.searchStudyPageData?.studies || [];
         setStudies(data);
-        setTotalPages(parseInt(response.data.searchStudyPageData.totalPages));
+        setTotalPages(parseInt(response.data.searchStudyPageData?.totalPages));
       } catch (err) {
         console.error(err);
       }

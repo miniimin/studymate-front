@@ -34,11 +34,16 @@ const Navbar: React.FC<NavbarProps> = ({
                     <div className={styles.brand}>
                         <Link href={brand.href}>{brand.label}</Link>
                     </div>
-                    <ul className={styles.navList}>
-                        <li className={styles.navItem}>
-                            <Link href={'/study/search'}>스터디찾기</Link>
-                        </li>
-                    </ul>
+                    {isLoggedIn && (
+                        <ul className={styles.navList}>
+                            <li className={styles.navItem}>
+                                <Link href={'/study/search'}>스터디찾기</Link>
+                            </li>
+                            <li className={styles.navItem}>
+                                <Link href='/study/my-study'>나의 스터디</Link>
+                            </li>
+                        </ul>
+                    )}
                 </div>
                 <ul className={styles.navList}>
                     {loading ? (
@@ -46,13 +51,11 @@ const Navbar: React.FC<NavbarProps> = ({
                     ) : (
                         (isLoggedIn ? (
                             <>
-                                <li className={styles.navItem}>
-                                    <Link href='/study/my-study'>나의 스터디</Link>
-                                </li>
                                 <li className={styles.navItemDropDown}
                                     onMouseEnter={() => setIsMyMenuOpen(true)}
                                     onMouseLeave={() => setIsMyMenuOpen(false)}>
-                                    <span>{user?.nickname}님 환영합니다</span>
+                                    <p>{user?.nickname}님 접속중</p>
+
                                     {isMyMenuOpen && (
                                         <ul className={styles.dropDownMenu} onClick={handleLogout}>
                                             <li>로그아웃</li>
@@ -62,9 +65,6 @@ const Navbar: React.FC<NavbarProps> = ({
                             </>
                         ) : (
                             <>
-                                <li className={styles.navItem}>
-                                    <Link href='/login'>로그인</Link>
-                                </li>
                                 <li className={styles.navItem}>
                                     <Link href='/join'>회원가입</Link>
                                 </li>
