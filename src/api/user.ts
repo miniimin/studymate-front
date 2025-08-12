@@ -20,7 +20,12 @@ export const postUser = async (userData: {
     password: string;
     confirmPassword: string;
 }) => {
-    const response = await axios.post(`${apiUrl}/api/users`, userData);
+    const xsrfToken = await getXsrfToken();
+    const response = await axios.post(`${apiUrl}/api/users`, userData, {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken
+        }
+    });
     return response;
 }
 
