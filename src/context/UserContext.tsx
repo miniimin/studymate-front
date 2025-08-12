@@ -31,14 +31,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     setUser({ nickname: res.data.nickname });
                 } else {
                     setUser(null);
-                    if (pathname !== '/login' && pathname !== '/join') {
+                    if (pathname !== '/login' && pathname !== '/join'  && pathname !== '/') {
                         router.push('/login');
                     }
                 }
             } catch (err) {
                 console.error(err);
                 setUser(null);
-                if (pathname !== '/login' && pathname !== '/join') {
+                if (pathname !== '/login' && pathname !== '/join' && pathname !== '/') {
                     router.push('/login');
                 }
             } finally {
